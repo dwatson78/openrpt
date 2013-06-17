@@ -29,6 +29,7 @@ DetailGroupSectionDialog::DetailGroupSectionDialog(QWidget* parent, Qt::WindowFl
     // signals and slots connections
     connect(btnOk, SIGNAL(clicked()), this, SLOT(accept()));
     connect(bntCancel, SIGNAL(clicked()), this, SLOT(reject()));
+    connect(breakAfterFooter, SIGNAL(stateChanged(int)), this, SLOT(sHandleBreakAfterFooter(int)));
 }
 
 DetailGroupSectionDialog::~DetailGroupSectionDialog()
@@ -41,3 +42,15 @@ void DetailGroupSectionDialog::languageChange()
     retranslateUi(this);
 }
 
+void DetailGroupSectionDialog::sHandleBreakAfterFooter(int state)
+{
+  if(breakAfterFooter->isChecked())
+  {
+    resetAfterBreak->setEnabled(true);
+  }
+  else
+  {
+    resetAfterBreak->setCheckState(Qt::Unchecked);
+    resetAfterBreak->setEnabled(false);
+  }
+}

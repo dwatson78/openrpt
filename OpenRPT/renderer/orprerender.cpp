@@ -30,6 +30,7 @@
 #include <QPrinter>
 #include <QFontMetrics>
 #include <QPainter>
+#include <QMap>
 
 #include <xsqlquery.h>
 #include <parameter.h>
@@ -71,10 +72,12 @@ class ORPreRenderPrivate {
     qreal _maxHeight;    // -- same as above --
     qreal _maxWidth;     // -- same as above --
     int _pageCounter;    // what page are we currently on?
+    int _groupPageCounter;  // what page are we currently on? (current group)
+    QMap<int,int> _groupPageCount; // group page count, hash of page number to page count
 
     QList<orQuery*> _lstQueries;
     QMap<QString, QColor> _colorMap;
-    QList<OROTextBox*> _postProcText;
+    QList<PostProcText*> _postProcText;
 
     // data for the watermark feature
     bool    _wmStatic;   // is this watermark static text or is the data
@@ -247,7 +250,7 @@ void ORPreRenderPrivate::renderWatermark(OROPage * p)
   if(!_wmStatic && !_wmData.query.isEmpty() && !_wmData.column.isEmpty())
   {
     if(_wmData.query == "Context Query" && _wmData.column == "page_number")
-      wmText = QString("%1").arg(_pageCounter);
+      wmText = QString("%1").arg(_pageCounter == _groupPageCounter ? _pageCounter : _groupPageCounter);
     else if(_wmData.query == "Context Query" && _wmData.column == "report_name")
       wmText = _reportData->name;
     else if(_wmData.query == "Context Query" && _wmData.column == "report_title")
@@ -288,6 +291,7 @@ void ORPreRenderPrivate::createNewPage()
   }
 
   _pageCounter++;
+  _groupPageCounter++;
 
   _page = new OROPage(0);
   _document->addPage(_page);
@@ -550,7 +554,14 @@ void ORPreRenderPrivate::renderDetailSection(ORDetailSectionData & detailData)
               // if all is good
               status = query->next();
               if(do_break)
+              {
                 createNewPage();
+                if(grp->isResetPageCountAfterGroupFooter)
+                {
+                  _groupPageCount.insert(_pageCounter-1, _groupPageCounter-1);
+                  _groupPageCounter = 1;
+                }
+              }
               if(status == true)
               {
                 for(i = pos; i < cnt; i++)
@@ -1229,7 +1240,7 @@ void ORPreRenderPrivate::addTextPrimitive(ORObject *&element, QPointF pos, QSize
   _page->addPrimitive(tb);
 
   if(text == "page_count") {
-    _postProcText.append(tb);
+    _postProcText.append(new PostProcText(_pageCounter, tb));
   }
 }
 
@@ -1256,7 +1267,7 @@ QString ORPreRenderPrivate::evaluateField(ORFieldData* f)
     else
     {
         if(f->data.query == "Context Query" && f->data.column == "page_number")
-            str = QString("%1").arg(_pageCounter);
+            str = QString("%1").arg(_pageCounter == _groupPageCounter ? _pageCounter : _groupPageCounter);
         else if(f->data.query == "Context Query" && f->data.column == "page_count")
             str = f->data.column;
         else if(f->data.query == "Context Query" && f->data.column == "report_name")
@@ -1407,6 +1418,9 @@ ORODocument* ORPreRender::generate()
   _internal->_document->setPrinterParams(_internal->_printerParams );
 
   _internal->_pageCounter  = 0;
+  _internal->_groupPageCounter  = 0;
+  _internal->_groupPageCount.clear();
+  
   _internal->_yOffset      = 0.0;
 
   if(!label.isNull())
@@ -1617,11 +1631,51 @@ ORODocument* ORPreRender::generate()
 
   // _postProcText contains those text boxes that need to be updated
   // with information that wasn't available at the time it was added to the document
-  for(int i = 0; i < _internal->_postProcText.size(); i++)
+  QList<PostProcText*>::iterator pptit;
+  for(pptit = _internal->_postProcText.begin(); pptit != _internal->_postProcText.end(); ++pptit)
   {
-    OROTextBox * tb = _internal->_postProcText.at(i);
-    if(tb->text() == "page_count")
-      tb->setText(QString::number(_internal->_document->pages()));
+    if((*pptit)->textBox()->text() == "page_count" || (*pptit)->textBox()->text().contains("{page_count}"))
+    {
+      if(_internal->_groupPageCount.isEmpty())
+      {
+        
+        if((*pptit)->textBox()->text() == "page_count")
+          (*pptit)->textBox()->setText(QString::number(_internal->_document->pages()));
+        else
+        {
+          QString str1 = (*pptit)->textBox()->text();
+          str1.replace("{page_count}", QString::number(_internal->_document->pages()));
+          (*pptit)->textBox()->setText(str1);
+        }
+      }
+      else
+      {
+        if(_internal->_groupPageCount.lowerBound((*pptit)->pageNumber())!=_internal->_groupPageCount.end())
+        {
+          if((*pptit)->textBox()->text() == "page_count")
+            (*pptit)->textBox()->setText(QString::number(_internal->_groupPageCount.lowerBound((*pptit)->pageNumber()).value()));
+          else
+          {
+            QString str1 = (*pptit)->textBox()->text();
+            str1.replace("{page_count}", QString::number(_internal->_groupPageCount.lowerBound((*pptit)->pageNumber()).value()));
+            (*pptit)->textBox()->setText(str1);
+          }
+        }
+        else 
+        {
+          QMap<int, int>::const_iterator gpci = _internal->_groupPageCount.constEnd();
+          --gpci;
+          if((*pptit)->textBox()->text() == "page_count")
+            (*pptit)->textBox()->setText(QString::number(_internal->_document->pages() - gpci.key()));
+          else
+          {
+            QString str1 = (*pptit)->textBox()->text();
+            str1.replace("{page_count}", QString::number(_internal->_document->pages() - gpci.key()));
+            (*pptit)->textBox()->setText(str1);
+          }
+        }
+      }
+    }
   }
 
   while(!_internal->_lstQueries.isEmpty())
@@ -1889,5 +1943,21 @@ void ORPreRender::setBackgroundScaleMode(Qt::AspectRatioMode mode)
 {
   if(_internal != 0)
     _internal->_bgScaleMode = mode;
+}
+
+PostProcText::PostProcText(const int pageNumber, OROTextBox* textBox)
+{
+  _pageNumber = pageNumber;
+  _textBox = textBox;
+}
+
+int PostProcText::pageNumber() const
+{
+  return _pageNumber;
+}
+
+OROTextBox* PostProcText::textBox()
+{
+  return _textBox;
 }
 

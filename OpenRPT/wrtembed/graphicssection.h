@@ -100,12 +100,14 @@ class ORGraphicsSectionDetailGroup : public QObject
     void setColumn(const QString &);
     void showGroupHead(bool yes = TRUE);
     void showGroupFoot(bool yes = TRUE);
+    void setResetPageCountAfterGroupFooter(bool yes = FALSE);
     void setPageBreak(int);
 
     QString getTitle() const { return _name; }
     QString column() const { return _column; }
     bool isGroupHeadShowing() const;
     bool isGroupFootShowing() const;
+    bool isResetPageCountAfterGroupFooter() const;
     int  pageBreak() const { return _pagebreak; }
 
     ORGraphicsSectionItem * getGroupHead() { return _head; }
@@ -121,6 +123,8 @@ class ORGraphicsSectionDetailGroup : public QObject
     ORGraphicsSectionDetail * _rsd;
 
     int _pagebreak;
+    
+    bool _resetPageCountAfterGroupFooter;
 };
 
 class ORGraphicsSectionDetail : public QObject

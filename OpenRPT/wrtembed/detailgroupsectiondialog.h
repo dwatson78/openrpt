@@ -35,6 +35,7 @@ public:
 
 protected slots:
     virtual void languageChange();
+    virtual void sHandleBreakAfterFooter(int);
 
 };
 

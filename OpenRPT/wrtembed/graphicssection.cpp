@@ -211,6 +211,7 @@ ORGraphicsSectionDetailGroup::ORGraphicsSectionDetailGroup(const QString & title
   : QObject(parent), _rsd(rsd)
 {
   _pagebreak = BreakNone;
+  _resetPageCountAfterGroupFooter = false;
   _head = new ORGraphicsSectionItem();
   _foot = new ORGraphicsSectionItem();
   showGroupHead(false);
@@ -263,6 +264,15 @@ void ORGraphicsSectionDetailGroup::showGroupFoot(bool yes)
   _rsd->adjustSize();
 }
 
+void ORGraphicsSectionDetailGroup::setResetPageCountAfterGroupFooter(bool yes)
+{
+  if(_resetPageCountAfterGroupFooter != yes)
+  {
+    _resetPageCountAfterGroupFooter = yes;
+    if(_rsd && _rsd->reportWindow()) _rsd->reportWindow()->setModified(TRUE);
+  }
+}
+
 void ORGraphicsSectionDetailGroup::setPageBreak(int pb)
 {
   if(_pagebreak != pb)
@@ -274,7 +284,7 @@ void ORGraphicsSectionDetailGroup::setPageBreak(int pb)
 
 bool ORGraphicsSectionDetailGroup::isGroupHeadShowing() const { return _head->isVisible(); }
 bool ORGraphicsSectionDetailGroup::isGroupFootShowing() const { return _foot->isVisible(); }
-
+bool ORGraphicsSectionDetailGroup::isResetPageCountAfterGroupFooter() const { return _resetPageCountAfterGroupFooter; }
 
 //
 //ORGraphicsSectionDetail
@@ -356,7 +366,11 @@ void ORGraphicsSectionDetail::buildXML(QDomDocument & doc, QDomElement & section
     {
       QDomElement pagebreak = doc.createElement("pagebreak");
       if(rsdg->pageBreak() == ORGraphicsSectionDetailGroup::BreakAfterGroupFooter)
+      {
         pagebreak.setAttribute("when", "after foot");
+        if(rsdg->isResetPageCountAfterGroupFooter())
+          pagebreak.setAttribute("resetPageCountAfter", "true");
+      }
       grp.appendChild(pagebreak);
     }
 
@@ -429,7 +443,18 @@ void ORGraphicsSectionDetail::initFromXML(QDomNode & section)
           QDomElement elemThis = gnode.toElement();
           QString n = elemThis.attribute("when");
           if("after foot" == n)
+          {
             rsdg->setPageBreak(ORGraphicsSectionDetailGroup::BreakAfterGroupFooter);
+            QString n = elemThis.attribute("resetPageCountAfter");
+            if("true" == n)
+              rsdg->setResetPageCountAfterGroupFooter(true);
+            else
+              rsdg->setResetPageCountAfterGroupFooter(false);
+          }
+          else
+          {
+            rsdg->setResetPageCountAfterGroupFooter(false);
+          }
         } else if(gnode.nodeName() == "head") {
           rsdg->getGroupHead()->initFromXML(gnode);
           rsdg->showGroupHead(TRUE);
