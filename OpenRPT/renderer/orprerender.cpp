@@ -1228,7 +1228,7 @@ void ORPreRenderPrivate::addTextPrimitive(ORObject *&element, QPointF pos, QSize
   tb->setRotation(element->rotation());
   _page->addPrimitive(tb);
 
-  if(text == "page_count") {
+  if(text == "page_count" || text.contains("{page_count}")) {
     _postProcText.append(tb);
   }
 }
@@ -1257,6 +1257,10 @@ QString ORPreRenderPrivate::evaluateField(ORFieldData* f)
     {
         if(f->data.query == "Context Query" && f->data.column == "page_number")
             str = QString("%1").arg(_pageCounter);
+        else if(f->data.query == "Context Query" && f->data.column == "page_number_of")
+            str = QString("Page %1 of ").arg(_pageCounter);
+        else if(f->data.query == "Context Query" && f->data.column == "page_number_of_page_count")
+            str = QString("Page %1 of {page_count}").arg(_pageCounter);
         else if(f->data.query == "Context Query" && f->data.column == "page_count")
             str = f->data.column;
         else if(f->data.query == "Context Query" && f->data.column == "report_name")
@@ -1620,8 +1624,8 @@ ORODocument* ORPreRender::generate()
   for(int i = 0; i < _internal->_postProcText.size(); i++)
   {
     OROTextBox * tb = _internal->_postProcText.at(i);
-    if(tb->text() == "page_count")
-      tb->setText(QString::number(_internal->_document->pages()));
+    if(tb->text() == "page_count" || tb->text().contains("{page_count}"))
+      tb->setText(processPageCount(tb->text(),_internal->_document->pages()));
   }
 
   while(!_internal->_lstQueries.isEmpty())
@@ -1631,6 +1635,18 @@ ORODocument* ORPreRender::generate()
   ORODocument * pDoc = _internal->_document;
   _internal->_document = 0;
   return pDoc;
+}
+
+QString ORPreRender::processPageCount(const QString & pageCountCallText, int pageCount) const
+{
+  if(pageCountCallText == "page_count")
+    return QString::number(pageCount);
+  else
+  {
+    QString output = QString(pageCountCallText);
+    output.replace("{page_count}",QString::number(pageCount));
+    return output;
+  }
 }
 
 void ORPreRender::setDatabase(QSqlDatabase pDb)
