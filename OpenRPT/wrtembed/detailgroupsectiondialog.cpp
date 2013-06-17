@@ -29,6 +29,7 @@ DetailGroupSectionDialog::DetailGroupSectionDialog(QWidget* parent, Qt::WindowFl
     // signals and slots connections
     connect(btnOk, SIGNAL(clicked()), this, SLOT(accept()));
     connect(bntCancel, SIGNAL(clicked()), this, SLOT(reject()));
+    connect(cbHead, SIGNAL(stateChanged(int)), this, SLOT(sHandleGroupHead(int)));
 }
 
 DetailGroupSectionDialog::~DetailGroupSectionDialog()
@@ -41,3 +42,15 @@ void DetailGroupSectionDialog::languageChange()
     retranslateUi(this);
 }
 
+void DetailGroupSectionDialog::sHandleGroupHead(int state)
+{
+  if(cbHead->isChecked())
+  {
+    reprintGroupHeader->setEnabled(true);
+  }
+  else
+  {
+    reprintGroupHeader->setCheckState(Qt::Unchecked);
+    reprintGroupHeader->setEnabled(false);
+  }
+}

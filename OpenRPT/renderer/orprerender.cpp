@@ -486,6 +486,8 @@ void ORPreRenderPrivate::renderDetailSection(ORDetailSectionData & detailData)
           createNewPage();
           if(l > 0)
             query->next();
+          if( grp && grp->head && grp->isReprintGroupHeader )
+            renderSection(*(grp->head));
         }
 
         // Render this section

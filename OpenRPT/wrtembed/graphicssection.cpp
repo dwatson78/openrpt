@@ -212,6 +212,7 @@ ORGraphicsSectionDetailGroup::ORGraphicsSectionDetailGroup(const QString & title
 {
   _pagebreak = BreakNone;
   _head = new ORGraphicsSectionItem();
+  _reprintGroupHeader = false;
   _foot = new ORGraphicsSectionItem();
   showGroupHead(false);
   showGroupFoot(false);
@@ -254,6 +255,15 @@ void ORGraphicsSectionDetailGroup::showGroupHead(bool yes)
   _rsd->adjustSize();
 }
 
+void ORGraphicsSectionDetailGroup::setReprintGroupHeader(bool yes)
+{
+  if(_reprintGroupHeader != yes)
+  {
+    _reprintGroupHeader = yes;
+    if(_rsd && _rsd->reportWindow()) _rsd->reportWindow()->setModified(TRUE);
+  }
+}
+
 void ORGraphicsSectionDetailGroup::showGroupFoot(bool yes)
 {
   if(isGroupFootShowing() != yes) {
@@ -272,7 +282,9 @@ void ORGraphicsSectionDetailGroup::setPageBreak(int pb)
   }
 }
 
-bool ORGraphicsSectionDetailGroup::isGroupHeadShowing() const { return _head->isVisible(); }
+bool ORGraphicsSectionDetailGroup::isGroupHeadShowing()   const { return _head->isVisible(); }
+bool ORGraphicsSectionDetailGroup::isReprintGroupHeader() const { return _reprintGroupHeader; }
+
 bool ORGraphicsSectionDetailGroup::isGroupFootShowing() const { return _foot->isVisible(); }
 
 
@@ -365,6 +377,10 @@ void ORGraphicsSectionDetail::buildXML(QDomDocument & doc, QDomElement & section
     {
       QDomElement ghead = doc.createElement("head");
       rsdg->getGroupHead()->buildXML(doc,ghead);
+      if(rsdg->isReprintGroupHeader())
+        ghead.setAttribute("reprintGroupHeader", "true");
+      else
+        ghead.setAttribute("reprintGroupHeader", "false");
       grp.appendChild(ghead);
     }
     // group foot
@@ -434,6 +450,12 @@ void ORGraphicsSectionDetail::initFromXML(QDomNode & section)
           rsdg->getGroupHead()->initFromXML(gnode);
           rsdg->showGroupHead(TRUE);
           show_head = TRUE;
+          QDomElement elemThis = gnode.toElement();
+          QString n = elemThis.attribute("reprintGroupHeader");
+          if("true" == n)
+            rsdg->setReprintGroupHeader(true);
+          else
+            rsdg->setReprintGroupHeader(false);
         } else if(gnode.nodeName() == "foot") {
           rsdg->getGroupFoot()->initFromXML(gnode);
           rsdg->showGroupFoot(TRUE);
