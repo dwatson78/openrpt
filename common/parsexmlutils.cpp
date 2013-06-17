@@ -1474,6 +1474,7 @@ bool parseReportDetailSection(const QDomElement & elemSource, ORDetailSectionDat
       QDomNodeList nl = elemThis.childNodes();
       QDomNode node;
       ORDetailGroupSectionData * dgsd = new ORDetailGroupSectionData();
+      dgsd->isResetPageCountAfterGroupFooter = false;
       for(int i = 0; i < nl.count(); i++)
       {
         node = nl.item(i);
@@ -1486,7 +1487,12 @@ bool parseReportDetailSection(const QDomElement & elemSource, ORDetailSectionDat
           QDomElement elemThis = node.toElement();
           QString n = elemThis.attribute("when");
           if("after foot" == n)
+          {
             dgsd->pagebreak = ORDetailGroupSectionData::BreakAfterGroupFoot;
+            QString n = elemThis.attribute("resetPageCountAfter");
+            if("true" == n)
+              dgsd->isResetPageCountAfterGroupFooter = true;
+          }
         }
         else if(node.nodeName() == "head")
         {

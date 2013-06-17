@@ -20,6 +20,8 @@
 #ifndef __ORPRERENDER_H__
 #define __ORPRERENDER_H__
 
+#include "renderobjects.h"
+
 #include <QSqlDatabase>
 #include <QDomDocument>
 #include <QRectF>
@@ -83,6 +85,16 @@ class ORPreRender {
 
   private:
     ORPreRenderPrivate* _internal;
+};
+
+class PostProcText {
+  public:
+    PostProcText(const int pageNumber, OROTextBox* textBox);
+    int pageNumber() const;
+    OROTextBox* textBox();
+  private:
+    int _pageNumber;
+    OROTextBox* _textBox;
 };
 
 

@@ -97,6 +97,7 @@ void DetailSectionDialog::btnEdit_clicked()
     dgsd->tbName->setText(rsdg->getTitle());
     dgsd->tbColumn->setText(rsdg->column());
     dgsd->breakAfterFooter->setChecked(rsdg->pageBreak()==ORGraphicsSectionDetailGroup::BreakAfterGroupFooter);
+    dgsd->resetAfterBreak->setChecked(rsdg->isResetPageCountAfterGroupFooter());
     dgsd->cbHead->setChecked(rsdg->isGroupHeadShowing());
     dgsd->cbFoot->setChecked(rsdg->isGroupFootShowing());
 
@@ -110,6 +111,7 @@ void DetailSectionDialog::btnEdit_clicked()
         bool showgh = dgsd->cbHead->isChecked();
         bool showgf = dgsd->cbFoot->isChecked();
         bool breakafterfoot = dgsd->breakAfterFooter->isChecked();
+        bool resetAfterBreak = dgsd->resetAfterBreak->isChecked();
 
         if(name != rsdg->getTitle() && _gsd->findSection(name) != -1)
         {
@@ -131,6 +133,7 @@ void DetailSectionDialog::btnEdit_clicked()
           else
             rsdg->setPageBreak(ORGraphicsSectionDetailGroup::BreakNone);
 
+          rsdg->setResetPageCountAfterGroupFooter(resetAfterBreak);
           exitLoop = TRUE;
         }
       }

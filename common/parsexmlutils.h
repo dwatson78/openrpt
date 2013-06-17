@@ -434,6 +434,8 @@ class ORDetailGroupSectionData
       BreakNone = 0,
       BreakAfterGroupFoot = 1
     };
+    
+    bool isResetPageCountAfterGroupFooter;
 
     QString name;
     QString column;
