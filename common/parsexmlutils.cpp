@@ -1475,6 +1475,7 @@ bool parseReportDetailSection(const QDomElement & elemSource, ORDetailSectionDat
       QDomNode node;
       ORDetailGroupSectionData * dgsd = new ORDetailGroupSectionData();
       dgsd->isResetPageCountAfterGroupFooter = false;
+      dgsd->isReprintGroupHeader = false;
       for(int i = 0; i < nl.count(); i++)
       {
         node = nl.item(i);
@@ -1503,6 +1504,10 @@ bool parseReportDetailSection(const QDomElement & elemSource, ORDetailSectionDat
             sectionTarget.trackTotal += sd->trackTotal;
             for(int it = 0; it < sd->trackTotal.count(); ++it)
               dgsd->_subtotCheckPoints[sd->trackTotal.at(it)] = 0.0;
+            QDomElement elemThis = node.toElement();
+            QString n = elemThis.attribute("reprintGroupHeader");
+            if("true" == n)
+              dgsd->isReprintGroupHeader = true;
           }
           else
             delete sd;

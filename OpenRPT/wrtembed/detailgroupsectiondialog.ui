@@ -76,6 +76,23 @@
     </widget>
    </item>
    <item>
+     <layout class="QVBoxLayout">
+       <property name="leftMargin">
+         <number>25</number>
+       </property>
+       <item>
+         <widget class="QCheckBox" name="reprintGroupHeader" >
+           <property name="text" >
+            <string>Reprint Group Header</string>
+           </property>
+           <property name="enabled">
+             <bool>false</bool>
+           </property>
+          </widget>
+        </item>
+     </layout>
+   </item>
+   <item>
     <widget class="QCheckBox" name="cbFoot" >
      <property name="text" >
       <string>Show Group Footer</string>
@@ -175,6 +192,7 @@
   <tabstop>tbName</tabstop>
   <tabstop>tbColumn</tabstop>
   <tabstop>cbHead</tabstop>
+  <tabstop>reprintGroupHeader</tabstop>
   <tabstop>cbFoot</tabstop>
   <tabstop>breakAfterFooter</tabstop>
   <tabstop>resetAfterBreak</tabstop>

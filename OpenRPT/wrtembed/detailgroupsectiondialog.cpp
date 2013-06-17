@@ -30,6 +30,7 @@ DetailGroupSectionDialog::DetailGroupSectionDialog(QWidget* parent, Qt::WindowFl
     connect(btnOk, SIGNAL(clicked()), this, SLOT(accept()));
     connect(bntCancel, SIGNAL(clicked()), this, SLOT(reject()));
     connect(breakAfterFooter, SIGNAL(stateChanged(int)), this, SLOT(sHandleBreakAfterFooter(int)));
+    connect(cbHead, SIGNAL(stateChanged(int)), this, SLOT(sHandleGroupHead(int)));
 }
 
 DetailGroupSectionDialog::~DetailGroupSectionDialog()
@@ -52,5 +53,18 @@ void DetailGroupSectionDialog::sHandleBreakAfterFooter(int state)
   {
     resetAfterBreak->setCheckState(Qt::Unchecked);
     resetAfterBreak->setEnabled(false);
+  }
+}
+
+void DetailGroupSectionDialog::sHandleGroupHead(int state)
+{
+  if(cbHead->isChecked())
+  {
+    reprintGroupHeader->setEnabled(true);
+  }
+  else
+  {
+    reprintGroupHeader->setCheckState(Qt::Unchecked);
+    reprintGroupHeader->setEnabled(false);
   }
 }

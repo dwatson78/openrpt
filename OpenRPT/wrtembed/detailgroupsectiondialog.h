@@ -36,6 +36,7 @@ public:
 protected slots:
     virtual void languageChange();
     virtual void sHandleBreakAfterFooter(int);
+    virtual void sHandleGroupHead(int);
 
 };
 

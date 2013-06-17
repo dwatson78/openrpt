@@ -99,6 +99,7 @@ class ORGraphicsSectionDetailGroup : public QObject
     void setTitle(const QString & s);
     void setColumn(const QString &);
     void showGroupHead(bool yes = TRUE);
+    void setReprintGroupHeader(bool yes = FALSE);
     void showGroupFoot(bool yes = TRUE);
     void setResetPageCountAfterGroupFooter(bool yes = FALSE);
     void setPageBreak(int);
@@ -106,6 +107,7 @@ class ORGraphicsSectionDetailGroup : public QObject
     QString getTitle() const { return _name; }
     QString column() const { return _column; }
     bool isGroupHeadShowing() const;
+    bool isReprintGroupHeader() const;
     bool isGroupFootShowing() const;
     bool isResetPageCountAfterGroupFooter() const;
     int  pageBreak() const { return _pagebreak; }
@@ -118,6 +120,8 @@ class ORGraphicsSectionDetailGroup : public QObject
     QString _column;
 
     ORGraphicsSectionItem * _head;
+    bool _reprintGroupHeader;
+    
     ORGraphicsSectionItem * _foot;
 
     ORGraphicsSectionDetail * _rsd;

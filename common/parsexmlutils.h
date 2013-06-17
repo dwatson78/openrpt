@@ -444,6 +444,8 @@ class ORDetailGroupSectionData
     QMap<ORDataData,double> _subtotCheckPoints;
 
     ORSectionData * head;
+    bool isReprintGroupHeader;
+
     ORSectionData * foot;
 };
 
