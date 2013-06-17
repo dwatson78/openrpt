@@ -46,6 +46,7 @@ class ORPreRender {
     virtual ~ORPreRender();
 
     ORODocument * generate();
+    QString processPageCount(const QString &, int) const;
 
     void setDatabase(QSqlDatabase);
     QSqlDatabase database() const;
