@@ -386,6 +386,18 @@ void ORPrintRender::renderPage(ORODocument * pDocument, int pageNb, QPainter *pa
 
       prim->drawRect(rc, painter, printResolution);
 
+      // Add a small amount of padding, text is too close to 
+      // the border when it is drawn and alignment is either left or
+      // right.
+      if(prim->border().width() > 0)
+      {
+        float padding = 0.01 + (prim->border().widthF()/200);
+        rc.setX(padding * xDpi);
+        rc.setY(padding * yDpi);
+        rc.setWidth((sz.width()-(padding*2)) * xDpi);
+        rc.setHeight((sz.height()-(padding*2)) * yDpi);
+      }
+
       painter->setFont(tb->font());
       QString text = tb->text();
       QString url;
