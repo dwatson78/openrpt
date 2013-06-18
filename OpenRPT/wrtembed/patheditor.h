@@ -31,10 +31,14 @@ class PathEditor : public QDialog, public Ui::PathEditor
     Q_OBJECT
 
 public:
-    PathEditor(QWidget* parent, QPen initPen, Qt::WindowFlags fl = 0);
+    PathEditor(QWidget* parent, QPen initPen, Qt::WindowFlags fl = 0, double left = -1, double top = -1, double width = -1, double height = -1);
     ~PathEditor();
 
     QPen pen() { return _pen; }
+    double left() { return _left; }
+    double top() { return _top; }
+    double width() { return _width; }
+    double height() { return _height; }
 
 public slots:
 
@@ -46,6 +50,10 @@ protected slots:
 
 private:
     QPen _pen;
+    double _left;
+    double _top;
+    double _width;
+    double _height;
 
 };
 

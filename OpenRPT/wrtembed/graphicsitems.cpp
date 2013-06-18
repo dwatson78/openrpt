@@ -533,7 +533,27 @@ void ORGraphicsRectItem::mouseDoubleClickEvent(QGraphicsSceneMouseEvent * event)
 
 void ORGraphicsRectItem::properties(QWidget * parent)
 {
-  borderProperties(parent);
+  double left = x() /100;
+  double top = y() /100;
+  double width = rect().width() /100;
+  double height = rect().height() /100;
+  PathEditor* dlg = new PathEditor(parent, _border, 0, left,top,width,height);
+  dlg->setWindowTitle("Rectangle Properties");
+  if(dlg->exec() == QDialog::Accepted)
+  {
+    _border = dlg->pen();
+    double newLeft = dlg->left();
+    double newTop = dlg->top();
+    double newWidth = dlg->width();
+    double newHeight = dlg->height();
+    QPointF newP1(newLeft,newTop);
+    setPos(newP1);
+    QRectF newRect = rect();
+    newRect.setWidth(newWidth);
+    newRect.setHeight(newHeight);
+    setRect(newRect);
+    _setModified(scene(), true);
+  }
 }
 
 void ORGraphicsRectItem::borderProperties(QWidget * parent)
@@ -917,10 +937,28 @@ void ORGraphicsLineItem::mouseDoubleClickEvent(QGraphicsSceneMouseEvent * event)
 
 void ORGraphicsLineItem::properties(QWidget * parent)
 {
-  PathEditor* dlg = new PathEditor(parent, pen());
+  QPointF sp = mapToParent(line().p1());
+  QPointF ep = mapToParent(line().p2());
+  double sx = sp.x() /100;
+  double sy = sp.y() /100;
+  double ex = ep.x() /100;
+  double ey = ep.y() /100;
+  PathEditor* dlg = new PathEditor(parent, pen(), 0, sx,sy,ex-sx,ey-sy);
+  dlg->setWindowTitle("Line Properties");
   if(dlg->exec() == QDialog::Accepted)
   {
     setPen(dlg->pen());
+    double x1 = dlg->left();
+    double y1 = dlg->top();
+    double x2 = dlg->left() + dlg->width();
+    double y2 = dlg->top() + dlg->height();
+    QPointF newP1(x1,y1);
+    QPointF newP2(x2,y2);
+    QPointF newp1 = mapFromParent(newP1);
+    QPointF newp2 = mapFromParent(newP2);
+    QLineF newLine(newp1,newp2);
+    setLine(newLine);
+    _setModified(scene(), true);
   }
 }
 
