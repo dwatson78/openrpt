@@ -24,7 +24,7 @@
 #include <QValidator>
 #include <QVariant>
 
-PathEditor::PathEditor(QWidget* parent, QPen initPen, Qt::WindowFlags fl)
+PathEditor::PathEditor(QWidget* parent, QPen initPen, Qt::WindowFlags fl, double left, double top, double width, double height)
     : QDialog(parent, fl)
 {
   setupUi(this);
@@ -42,11 +42,33 @@ PathEditor::PathEditor(QWidget* parent, QPen initPen, Qt::WindowFlags fl)
     default:
       _rbSolidStyle->setChecked(true);
   }
+  _left = left;
+  _top = top;
+  _width = width;
+  _height = height;
 
   // signals and slots connections
   connect(_btnAccept, SIGNAL(clicked()), this, SLOT(accept()));
   connect(_btnCancel, SIGNAL(clicked()), this, SLOT(reject()));
   connect(_btnColor, SIGNAL(clicked()), this, SLOT(_btnColor_clicked()));
+
+  _qleLeft->setValidator(new QDoubleValidator(0.0,100.0,3,_qleLeft));
+  _qleTop->setValidator(new QDoubleValidator(0.0,100.0,3,_qleTop));
+  _qleWidth->setValidator(new QDoubleValidator(-100.0,100.0,3,_qleWidth));
+  _qleHeight->setValidator(new QDoubleValidator(-100.0,100.0,3,_qleHeight));
+
+  if(_left != -1 && _top != -1 && _width != -1 && _height != -1)
+  {
+    _qleLeft->setText(QString::number(_left));
+    _qleTop->setText(QString::number(_top));
+    _qleWidth->setText(QString::number(_width));
+    _qleHeight->setText(QString::number(_height));
+    _qleWidth->setVisible(true);
+  }
+  else
+  {
+    _gbPos->setVisible(false);
+  }
 
 }
 
@@ -77,6 +99,17 @@ void PathEditor::accept()
     _pen.setStyle(Qt::DashLine);
   else
     _pen.setStyle(Qt::SolidLine);
+
+  double dt;
+  bool ok;
+  dt = _qleLeft->text().toDouble(&ok);
+  if(ok) _left = dt * 100;
+  dt = _qleTop->text().toDouble(&ok);
+  if(ok) _top = dt * 100;
+  dt = _qleWidth->text().toDouble(&ok);
+  if(ok) _width = dt * 100;
+  dt = _qleHeight->text().toDouble(&ok);
+  if(ok) _height = dt * 100;
 
   QDialog::accept();
 }

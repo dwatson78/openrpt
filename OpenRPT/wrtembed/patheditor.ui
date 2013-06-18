@@ -23,9 +23,15 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>248</width>
-    <height>161</height>
+    <width>315</width>
+    <height>300</height>
    </rect>
+  </property>
+  <property name="minimumSize">
+   <size>
+    <width>315</width>
+    <height>300</height>
+   </size>
   </property>
   <property name="windowTitle">
    <string>Stroke properties</string>
@@ -110,6 +116,69 @@
           </property>
          </widget>
         </item>
+        <item row="3" column="0">
+         <widget class="QPushButton" name="_btnColor">
+          <property name="text">
+           <string>Color...</string>
+          </property>
+         </widget>
+        </item>
+       </layout>
+      </widget>
+     </item>
+     <item>
+      <widget class="QGroupBox" name="_gbPos">
+       <property name="title">
+        <string>Position</string>
+       </property>
+       <layout class="QGridLayout">
+        <property name="margin">
+         <number>11</number>
+        </property>
+        <item row="0" column="0">
+         <widget class="QLabel" name="_lblQleLeft">
+          <property name="text">
+           <string>Left:</string>
+          </property>
+         </widget>
+        </item>
+        <item row="0" column="1">
+         <widget class="QLineEdit" name="_qleLeft">
+         </widget>
+        </item>
+        <item row="0" column="2">
+         <widget class="QLabel" name="_lblQleWidth">
+          <property name="text">
+           <string>Width:</string>
+          </property>
+         </widget>
+        </item>
+        <item row="0" column="3">
+         <widget class="QLineEdit" name="_qleWidth">
+         </widget>
+        </item>
+        <item row="1" column="0">
+         <widget class="QLabel" name="_lblQleTop">
+          <property name="text">
+           <string>Top:</string>
+          </property>
+         </widget>
+        </item>
+        <item row="1" column="1">
+         <widget class="QLineEdit" name="_qleTop">
+         </widget>
+        </item>
+        <item row="1" column="2">
+         <widget class="QLabel" name="_lblQleHeight">
+          <property name="text">
+           <string>Height:</string>
+          </property>
+         </widget>
+        </item>
+        <item row="1" column="3">
+         <widget class="QLineEdit" name="_qleHeight">
+         </widget>
+        </item>
        </layout>
       </widget>
      </item>
@@ -121,6 +190,9 @@
       <widget class="QPushButton" name="_btnAccept">
        <property name="text">
         <string>&amp;OK</string>
+       </property>
+       <property name="default">
+        <bool>true</bool>
        </property>
       </widget>
      </item>
@@ -147,20 +219,20 @@
        </property>
       </spacer>
      </item>
-     <item>
-      <widget class="QPushButton" name="_btnColor">
-       <property name="text">
-        <string>Color...</string>
-       </property>
-      </widget>
-     </item>
     </layout>
    </item>
   </layout>
  </widget>
  <layoutdefault spacing="6" margin="11"/>
  <tabstops>
+  <tabstop>_rbSolidStyle</tabstop>
+  <tabstop>_rbDashedStyle</tabstop>
+  <tabstop>_rbDottedStyle</tabstop>
   <tabstop>_btnColor</tabstop>
+  <tabstop>_qleLeft</tabstop>
+  <tabstop>_qleWidth</tabstop>
+  <tabstop>_qleTop</tabstop>
+  <tabstop>_qleHeight</tabstop>
   <tabstop>_btnAccept</tabstop>
   <tabstop>_btnCancel</tabstop>
  </tabstops>
