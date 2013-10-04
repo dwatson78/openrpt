@@ -255,9 +255,9 @@ bool ReportProperties::isBgStatic()
 void ReportProperties::setBgStatic( bool b )
 {
     if(b) {
-	_rbBgStatic->setChecked(TRUE);
+	_rbBgStatic->setChecked(true);
     } else {
-	_rbBgDynamic->setChecked(TRUE);
+	_rbBgDynamic->setChecked(true);
     }
 }
 
@@ -273,9 +273,9 @@ QString ReportProperties::getBgResizeMode()
 void ReportProperties::setBgResizeMode( QString m )
 {
     if(m == "stretch") {
-	_rbBgStretch->setChecked(TRUE);
+	_rbBgStretch->setChecked(true);
     } else /* if(m == "clip") */ {
-	_rbBgClip->setChecked(TRUE);
+	_rbBgClip->setChecked(true);
     }
     
 }
@@ -311,23 +311,23 @@ void ReportProperties::sLoadBgImage() {
 void ReportProperties::setBgAlign( int f )
 {
     if((f & Qt::AlignLeft) == Qt::AlignLeft) {
-        _rbBgHAlignLeft->setChecked(TRUE);
+        _rbBgHAlignLeft->setChecked(true);
     } else if((f & Qt::AlignHCenter) == Qt::AlignHCenter) {
-        _rbBgHAlignCenter->setChecked(TRUE);
+        _rbBgHAlignCenter->setChecked(true);
     } else if((f & Qt::AlignRight) == Qt::AlignRight) {
-        _rbBgHAlignRight->setChecked(TRUE);
+        _rbBgHAlignRight->setChecked(true);
     } else {
-	_rbBgHAlignLeft->setChecked(TRUE);
+	_rbBgHAlignLeft->setChecked(true);
     }
     
     if((f & Qt::AlignTop) == Qt::AlignTop) {
-        _rbBgVAlignTop->setChecked(TRUE);
+        _rbBgVAlignTop->setChecked(true);
     } else if((f & Qt::AlignVCenter) == Qt::AlignVCenter) {
-        _rbBgVAlignMiddle->setChecked(TRUE);
+        _rbBgVAlignMiddle->setChecked(true);
     } else if((f & Qt::AlignBottom) == Qt::AlignBottom) {
-        _rbBgVAlignBottom->setChecked(TRUE);
+        _rbBgVAlignBottom->setChecked(true);
     } else {
-	_rbBgVAlignTop->setChecked(TRUE);
+	_rbBgVAlignTop->setChecked(true);
     }
 }
 

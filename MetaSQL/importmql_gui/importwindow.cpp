@@ -44,11 +44,11 @@ ImportWindow::ImportWindow(QWidget* parent, Qt::WindowFlags fl)
   (void)statusBar();
 
   // signals and slots connections
-  connect(helpIndexAction, SIGNAL(activated()), this, SLOT(helpIndex()));
-  connect(helpContentsAction, SIGNAL(activated()), this, SLOT(helpContents()));
-  connect(helpAboutAction, SIGNAL(activated()), this, SLOT(helpAbout()));
-  connect(fileExitAction, SIGNAL(activated()), this, SLOT(fileExit()));
-  connect(fileOpenAction, SIGNAL(activated()), this, SLOT(sAdd()));
+  connect(helpIndexAction, SIGNAL(triggered()), this, SLOT(helpIndex()));
+  connect(helpContentsAction, SIGNAL(triggered()), this, SLOT(helpContents()));
+  connect(helpAboutAction, SIGNAL(triggered()), this, SLOT(helpAbout()));
+  connect(fileExitAction, SIGNAL(triggered()), this, SLOT(fileExit()));
+  connect(fileOpenAction, SIGNAL(triggered()), this, SLOT(sAdd()));
   connect(_add, SIGNAL(clicked()), this, SLOT(sAdd()));
   connect(_import, SIGNAL(clicked()), this, SLOT(sImport()));
   connect(_remove, SIGNAL(clicked()), this, SLOT(sRemove()));
@@ -249,7 +249,7 @@ void ImportWindow::timerEvent( QTimerEvent * e )
 {
   if(e->timerId() == _dbTimerId)
   {
-    QSqlDatabase db = QSqlDatabase::database(QSqlDatabase::defaultConnection,FALSE);
+    QSqlDatabase db = QSqlDatabase::database(QSqlDatabase::defaultConnection,false);
     if(db.isValid())
       QSqlQuery qry(getSqlFromTag("fmt07", db.driverName()));
     // if we are not connected then we have some problems!

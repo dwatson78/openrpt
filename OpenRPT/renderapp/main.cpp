@@ -44,17 +44,17 @@ int main(int argc, char *argv[])
   QString username  = "";
   QString filename;
   QString printerName;
-  bool    haveUsername    = FALSE;
-  bool    haveDatabaseURL = FALSE;
-  bool    loggedIn        = FALSE;
-  bool    print           = FALSE;
-  bool    printPreview    = FALSE;
-  bool    close           = FALSE;
-  bool    autoPrint       = FALSE;                      //AUTOPRINT
+  bool    haveUsername    = false;
+  bool    haveDatabaseURL = false;
+  bool    loggedIn        = false;
+  bool    print           = false;
+  bool    printPreview    = false;
+  bool    close           = false;
+  bool    autoPrint       = false;                      //AUTOPRINT
   int     numCopies       = 1;
   // BVI::Sednacom
   // new options
-  bool    pdfOutput = FALSE;
+  bool    pdfOutput = false;
   QString pdfFileName;
   // BVI::Sednacom
 
@@ -70,20 +70,20 @@ int main(int argc, char *argv[])
   OpenRPT::languages.addTranslationToDefault(":/renderapp.qm");
   OpenRPT::languages.installSelected();
 
-  if (app.argc() > 1)
+  if (argc > 1)
   {
-    haveUsername        = FALSE;
-    bool    havePasswd          = FALSE;
+    haveUsername        = false;
+    bool    havePasswd          = false;
     QString passwd              = "";
 
     QStringList arguments;
-    QString firstArgument = QString( app.argv()[ 1 ] );
+    QString firstArgument = QString( argv[ 1 ] );
 
     if( firstArgument.startsWith("-fromStdin=", Qt::CaseInsensitive) ){
       QFile file;
       file.open(stdin, QIODevice::ReadOnly);
       QTextStream in(&file);
-      in.setCodec( firstArgument.right( firstArgument.length() - 11 ).toAscii() ); 
+      in.setCodec( firstArgument.right( firstArgument.length() - 11 ).toLatin1() ); 
       QString arg;
       while( arg.compare("-launch") !=0 ){
         arg = in.readLine();
@@ -92,8 +92,8 @@ int main(int argc, char *argv[])
       file.close();
     }
     else{
-      for (int intCounter = 1; intCounter < app.argc(); intCounter++){
-        arguments << QString (app.argv()[intCounter]);
+      for (int intCounter = 1; intCounter < argc; intCounter++){
+        arguments << QString (argv[intCounter]);
       }
     }
 
@@ -101,23 +101,23 @@ int main(int argc, char *argv[])
       QString argument( *it );
 
       if (argument.startsWith("-databaseURL=", Qt::CaseInsensitive)) {
-        haveDatabaseURL = TRUE;
+        haveDatabaseURL = true;
         databaseURL    = argument.right(argument.length() - 13);
       }
       else if (argument.startsWith("-username=", Qt::CaseInsensitive))
       {
-        haveUsername = TRUE;
+        haveUsername = true;
         username     = argument.right(argument.length() - 10);
       }
       else if (argument.startsWith("-passwd=", Qt::CaseInsensitive))
       {
-        havePasswd = TRUE;
+        havePasswd = true;
         passwd     = argument.right(argument.length() - 8);
       }
       else if (argument.toLower() == "-noauth")
       {
-        haveUsername = TRUE;
-        havePasswd   = TRUE;
+        haveUsername = true;
+        havePasswd   = true;
       }
       else if (argument.startsWith("-numCopies=", Qt::CaseInsensitive)){
         numCopies = argument.right( argument.length() - 11).toInt();
@@ -209,7 +209,7 @@ int main(int argc, char *argv[])
         QApplication::exit(-1);
       }
       else
-        loggedIn = TRUE;
+        loggedIn = true;
     }
 
   }
@@ -228,7 +228,7 @@ int main(int argc, char *argv[])
     if (haveDatabaseURL)
       params.append("databaseURL", databaseURL);
 
-    login newdlg(0, "", TRUE);
+    login newdlg(0, "", true);
     newdlg.set(params, 0);
 
     if (newdlg.exec() == QDialog::Rejected)
@@ -292,11 +292,11 @@ int main(int argc, char *argv[])
       {
         for(QStringList::Iterator pit = paths.begin(); pit != paths.end(); ++pit)
         {
-          qDebug("looking for %s in %s", (*fit).toAscii().data(), (*pit).toAscii().data());
+          qDebug("looking for %s in %s", (*fit).toLatin1().data(), (*pit).toLatin1().data());
           if (translator->load(*fit, *pit))
           {
             app.installTranslator(translator);
-            qDebug("installed %s/%s", (*pit).toAscii().data(), (*fit).toAscii().data());
+            qDebug("installed %s/%s", (*pit).toLatin1().data(), (*fit).toLatin1().data());
             translator = new QTranslator(&app);
             break;
           }

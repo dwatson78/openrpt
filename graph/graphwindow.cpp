@@ -83,7 +83,7 @@ void GraphWindow::_labelTable_valueChanged( int r, int s)
 
 void GraphWindow::_btnClear_clicked()
 {
-    _noUpdate = TRUE;
+    _noUpdate = true;
     for(int r = 0; r < _labelTable->rowCount(); r++) {
         _labelTable->item(r, 0)->setText(QString::null);
         for(int c = 0; c < _dataTable->columnCount(); c++) {
@@ -91,21 +91,21 @@ void GraphWindow::_btnClear_clicked()
         }
     }
     _graph->clear();
-    _noUpdate = FALSE;
+    _noUpdate = false;
 }
 
 void GraphWindow::init(bool haveDB)
 {
-    _noUpdate = FALSE;
+    _noUpdate = false;
     _gbSql->setEnabled(haveDB);
 }
 
 void GraphWindow::_btnSql_clicked()
 {
-    _noUpdate = TRUE;
+    _noUpdate = true;
     _btnClear_clicked();
     QString sql = _editSql->toPlainText();
     QSqlQuery qry = QSqlQuery(sql);
     _graph->populateFromResult(qry);
-    _noUpdate = FALSE;
+    _noUpdate = false;
 }

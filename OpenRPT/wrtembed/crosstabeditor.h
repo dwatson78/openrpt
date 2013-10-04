@@ -21,7 +21,7 @@
 #ifndef CROSSTABEDITOR_H
 #define CROSSTABEDITOR_H
 
-#include <QtGui/QDialog>
+#include <QDialog>
 
 #include "ui_crosstabeditor.h"
 

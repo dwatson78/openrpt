@@ -42,7 +42,7 @@ QString QUUEncode(QIODevice & iod, const QString & _remote, int mode) {
     if(remote == QString::null) remote = "internal";
     if(mode == 0) mode = 0644;
 
-    value = QString().sprintf("begin %o %s\n", mode, remote.toAscii().data());
+    value = QString().sprintf("begin %o %s\n", mode, remote.toLatin1().data());
 
     qint64 nr = 0;
     char data[45];
@@ -107,7 +107,7 @@ QByteArray QUUDecode(const QString & _source, QString * name, int * mode) {
         *mode = 0;
         for(int i = 0; i < _mode.length(); i++) {
             qc = _mode.at(i);
-            c = qc.toAscii();
+            c = qc.toLatin1();
             c -= '0'; // convert the ascii value to the decimal value
             *mode = (*mode << 3) | (c & 07);
         }
@@ -120,18 +120,18 @@ QByteArray QUUDecode(const QString & _source, QString * name, int * mode) {
     char c0, c1, c2, c3;
     while( ((l = in.readLine()) != QString::null) && (!l.startsWith("end")) ) {
         qc = l[0];
-        c = qc.toAscii();
+        c = qc.toLatin1();
         num = DEC(c);
         for(int p = 1; num > 0; p += 4, num -= 3) {
             if(num >= 3) {
                 qc = l[p + 0];
-                c0 = qc.toAscii();
+                c0 = qc.toLatin1();
                 qc = l[p + 1];
-                c1 = qc.toAscii();
+                c1 = qc.toLatin1();
                 qc = l[p + 2];
-                c2 = qc.toAscii();
+                c2 = qc.toLatin1();
                 qc = l[p + 3];
-                c3 = qc.toAscii();
+                c3 = qc.toLatin1();
 
                 c = DEC(c0) << 2 | DEC(c1) >> 4;
                 buf.putChar(c);
@@ -142,18 +142,18 @@ QByteArray QUUDecode(const QString & _source, QString * name, int * mode) {
             } else {
                 if(num >= 1) {
                     qc = l[p + 0];
-                    c0 = qc.toAscii();
+                    c0 = qc.toLatin1();
                     qc = l[p + 1];
-                    c1 = qc.toAscii();
+                    c1 = qc.toLatin1();
 
                     c = DEC(c0) << 2 | DEC(c1) >> 4;
                     buf.putChar(c);
                 }
                 if(num >= 2) {
                     qc = l[p + 1];
-                    c1 = qc.toAscii();
+                    c1 = qc.toLatin1();
                     qc = l[p + 2];
-                    c2 = qc.toAscii();
+                    c2 = qc.toLatin1();
 
                     c = DEC(c1) << 4 | DEC(c2) >> 2;
                     buf.putChar(c);

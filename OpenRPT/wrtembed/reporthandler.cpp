@@ -66,7 +66,6 @@
 #include <QFileDialog>
 #include <QInputDialog>
 #include <QSpinBox>
-#include <QWorkspace>
 #include <QMouseEvent>
 #include <QDesktopWidget>
 #include <QPrintDialog>
@@ -74,6 +73,8 @@
 #include <QGraphicsView>
 #include <QGraphicsRectItem>
 #include <QColorDialog>
+#include <QMdiArea>
+#include <QMdiSubWindow>
 
 extern bool __dosnap;
 
@@ -201,11 +202,11 @@ ReportHandler::ReportHandler(QObject * parent, const char * name)
 
   // initialize data
   _parentWindow = 0;
-  _parentWindowIsWorkspace = false;
-  _noDatabase = FALSE;
-  _allowDBConnect = TRUE;
-  _placeMenusOnWindows = FALSE;
-  _placeToolbarsOnWindows = FALSE;
+  _mdiParentWindow = 0;
+  _noDatabase = false;
+  _allowDBConnect = true;
+  _placeMenusOnWindows = false;
+  _placeToolbarsOnWindows = false;
 
   _strMenuConnect = QObject::tr("Connect to Database");
   _strMenuDisconnect = QObject::tr("Disconnect from Database");
@@ -369,58 +370,58 @@ ReportHandler::ReportHandler(QObject * parent, const char * name)
 
 
   // connect the actions to various slots so they functions properly
-  connect(fileNewAction, SIGNAL(activated()), this, SLOT(fileNew()));
-  connect(fileOpenAction, SIGNAL(activated()), this, SLOT(fileOpen()));
-  connect(fileSaveAction, SIGNAL(activated()), this, SLOT(fileSave()));
-  connect(fileSaveAsAction, SIGNAL(activated()), this, SLOT(fileSaveAs()));
-  connect(fileCloseAction, SIGNAL(activated()), this, SLOT(fileClose()));
-  connect(filePreviewAction, SIGNAL(activated()), this, SLOT(filePreview()));
-  connect(filePrintAction, SIGNAL(activated()), this, SLOT(filePrint()));
-  connect(filePrintToPDFAction, SIGNAL(activated()), this, SLOT(filePrintToPDF()));
-  connect(editUndoAction, SIGNAL(activated()), this, SLOT(editUndo()));
-  connect(editRedoAction, SIGNAL(activated()), this, SLOT(editRedo()));
-  connect(editZoomInAction, SIGNAL(activated()), this, SLOT(editZoomIn()));
-  connect(editZoomOutAction, SIGNAL(activated()), this, SLOT(editZoomOut()));
-  connect(editCutAction, SIGNAL(activated()), this, SLOT(editCut()));
-  connect(editCopyAction, SIGNAL(activated()), this, SLOT(editCopy()));
-  connect(editPasteAction, SIGNAL(activated()), this, SLOT(editPaste()));
-  connect(editDeleteAction, SIGNAL(activated()), this, SLOT(editDelete()));
-  connect(editSelectAllAction, SIGNAL(activated()), this, SLOT(editSelectAll()));
-  connect(editPreferencesAction, SIGNAL(activated()), this, SLOT(editPreferences()));
-  connect(editPropertiesAction, SIGNAL(activated()), this, SLOT(editProperties()));
+  connect(fileNewAction, SIGNAL(triggered()), this, SLOT(fileNew()));
+  connect(fileOpenAction, SIGNAL(triggered()), this, SLOT(fileOpen()));
+  connect(fileSaveAction, SIGNAL(triggered()), this, SLOT(fileSave()));
+  connect(fileSaveAsAction, SIGNAL(triggered()), this, SLOT(fileSaveAs()));
+  connect(fileCloseAction, SIGNAL(triggered()), this, SLOT(fileClose()));
+  connect(filePreviewAction, SIGNAL(triggered()), this, SLOT(filePreview()));
+  connect(filePrintAction, SIGNAL(triggered()), this, SLOT(filePrint()));
+  connect(filePrintToPDFAction, SIGNAL(triggered()), this, SLOT(filePrintToPDF()));
+  connect(editUndoAction, SIGNAL(triggered()), this, SLOT(editUndo()));
+  connect(editRedoAction, SIGNAL(triggered()), this, SLOT(editRedo()));
+  connect(editZoomInAction, SIGNAL(triggered()), this, SLOT(editZoomIn()));
+  connect(editZoomOutAction, SIGNAL(triggered()), this, SLOT(editZoomOut()));
+  connect(editCutAction, SIGNAL(triggered()), this, SLOT(editCut()));
+  connect(editCopyAction, SIGNAL(triggered()), this, SLOT(editCopy()));
+  connect(editPasteAction, SIGNAL(triggered()), this, SLOT(editPaste()));
+  connect(editDeleteAction, SIGNAL(triggered()), this, SLOT(editDelete()));
+  connect(editSelectAllAction, SIGNAL(triggered()), this, SLOT(editSelectAll()));
+  connect(editPreferencesAction, SIGNAL(triggered()), this, SLOT(editPreferences()));
+  connect(editPropertiesAction, SIGNAL(triggered()), this, SLOT(editProperties()));
   connect(gridShowAction, SIGNAL(toggled(bool)), gridOptions, SLOT(setVisible(bool)));
   connect(gridSnapAction, SIGNAL(toggled(bool)), gridOptions, SLOT(setSnap(bool)));
-  connect(itemLabelAction, SIGNAL(activated()), this, SLOT(itemLabel()));
-  connect(itemFieldAction, SIGNAL(activated()), this, SLOT(itemField()));
-  connect(itemTextAction, SIGNAL(activated()), this, SLOT(itemText()));
-  connect(itemLineAction, SIGNAL(activated()), this, SLOT(itemLine()));
-  connect(itemRectAction, SIGNAL(activated()), this, SLOT(itemRect()));
-  connect(itemCrossTabAction, SIGNAL(activated()), this, SLOT(itemCrossTab()));
-  connect(itemBarcodeAction, SIGNAL(activated()), this, SLOT(itemBarcode()));
-  connect(itemImageAction, SIGNAL(activated()), this, SLOT(itemImage()));
-  connect(itemGraphAction, SIGNAL(activated()), this, SLOT(itemGraph()));
-  connect(dbConnectAction, SIGNAL(activated()), this, SLOT(dbConnect()));
-  connect(dbLoadAction, SIGNAL(activated()), this, SLOT(dbLoadDoc()));
-  connect(dbSaveAction, SIGNAL(activated()), this, SLOT(dbSaveDoc()));
-  connect(docTitleAction, SIGNAL(activated()), this, SLOT(docTitle()));
-  connect(docPageSetupAction, SIGNAL(activated()), this, SLOT(docPageSetup()));
-  connect(docQuerySourceListAction, SIGNAL(activated()), this, SLOT(docQuerySourceList()));
-  connect(docSectionEditorAction, SIGNAL(activated()), this, SLOT(docSectionEditor()));
-  connect(docColorListAction, SIGNAL(activated()), this, SLOT(docColorList()));
-  connect(docDefinedParamsAction, SIGNAL(activated()), this, SLOT(docDefinedParams()));
-  connect(docLabelDefinitionsAction, SIGNAL(activated()), this, SLOT(docLabelDefinitions()));
-  connect(alignTopAction, SIGNAL(activated()), this, SLOT(alignTop()));
-  connect(alignVCenterAction, SIGNAL(activated()), this, SLOT(alignVCenter()));
-  connect(alignBottomAction, SIGNAL(activated()), this, SLOT(alignBottom()));
-  connect(alignLeftAction, SIGNAL(activated()), this, SLOT(alignLeft()));
-  connect(alignHCenterAction, SIGNAL(activated()), this, SLOT(alignHCenter()));
-  connect(alignRightAction, SIGNAL(activated()), this, SLOT(alignRight()));
-  connect(evenHSpacingAction, SIGNAL(activated()), this, SLOT(evenHSpacing()));
-  connect(evenVSpacingAction, SIGNAL(activated()), this, SLOT(evenVSpacing()));
-  connect(colorAction, SIGNAL(activated()), this, SLOT(color()));
-  connect(fillAction, SIGNAL(activated()), this, SLOT(fill()));
-  connect(borderAction, SIGNAL(activated()), this, SLOT(border()));
-  connect(rotationAction, SIGNAL(activated()), this, SLOT(rotation()));
+  connect(itemLabelAction, SIGNAL(triggered()), this, SLOT(itemLabel()));
+  connect(itemFieldAction, SIGNAL(triggered()), this, SLOT(itemField()));
+  connect(itemTextAction, SIGNAL(triggered()), this, SLOT(itemText()));
+  connect(itemLineAction, SIGNAL(triggered()), this, SLOT(itemLine()));
+  connect(itemRectAction, SIGNAL(triggered()), this, SLOT(itemRect()));
+  connect(itemCrossTabAction, SIGNAL(triggered()), this, SLOT(itemCrossTab()));
+  connect(itemBarcodeAction, SIGNAL(triggered()), this, SLOT(itemBarcode()));
+  connect(itemImageAction, SIGNAL(triggered()), this, SLOT(itemImage()));
+  connect(itemGraphAction, SIGNAL(triggered()), this, SLOT(itemGraph()));
+  connect(dbConnectAction, SIGNAL(triggered()), this, SLOT(dbConnect()));
+  connect(dbLoadAction, SIGNAL(triggered()), this, SLOT(dbLoadDoc()));
+  connect(dbSaveAction, SIGNAL(triggered()), this, SLOT(dbSaveDoc()));
+  connect(docTitleAction, SIGNAL(triggered()), this, SLOT(docTitle()));
+  connect(docPageSetupAction, SIGNAL(triggered()), this, SLOT(docPageSetup()));
+  connect(docQuerySourceListAction, SIGNAL(triggered()), this, SLOT(docQuerySourceList()));
+  connect(docSectionEditorAction, SIGNAL(triggered()), this, SLOT(docSectionEditor()));
+  connect(docColorListAction, SIGNAL(triggered()), this, SLOT(docColorList()));
+  connect(docDefinedParamsAction, SIGNAL(triggered()), this, SLOT(docDefinedParams()));
+  connect(docLabelDefinitionsAction, SIGNAL(triggered()), this, SLOT(docLabelDefinitions()));
+  connect(alignTopAction, SIGNAL(triggered()), this, SLOT(alignTop()));
+  connect(alignVCenterAction, SIGNAL(triggered()), this, SLOT(alignVCenter()));
+  connect(alignBottomAction, SIGNAL(triggered()), this, SLOT(alignBottom()));
+  connect(alignLeftAction, SIGNAL(triggered()), this, SLOT(alignLeft()));
+  connect(alignHCenterAction, SIGNAL(triggered()), this, SLOT(alignHCenter()));
+  connect(alignRightAction, SIGNAL(triggered()), this, SLOT(alignRight()));
+  connect(evenHSpacingAction, SIGNAL(triggered()), this, SLOT(evenHSpacing()));
+  connect(evenVSpacingAction, SIGNAL(triggered()), this, SLOT(evenVSpacing()));
+  connect(colorAction, SIGNAL(triggered()), this, SLOT(color()));
+  connect(fillAction, SIGNAL(triggered()), this, SLOT(fill()));
+  connect(borderAction, SIGNAL(triggered()), this, SLOT(border()));
+  connect(rotationAction, SIGNAL(triggered()), this, SLOT(rotation()));
 }
 
 ReportHandler::~ReportHandler()
@@ -606,7 +607,7 @@ QAction * ReportHandler::populateMenuBar(QMenuBar * menubar, QAction * exitActio
 void ReportHandler::setParentWindow(QWidget * pw)
 {
   _parentWindow = pw;
-  _parentWindowIsWorkspace = (pw && (pw->metaObject()->className() == QString("QWorkspace")));
+  _mdiParentWindow = qobject_cast<QMdiArea *>(pw);
 }
 
 
@@ -1188,7 +1189,7 @@ void ReportHandler::editPaste(const QPointF & pos)
     {
       pasted_ent->setSelected(true);
       sectionData->mouseAction = ReportWriterSectionData::MA_Grab;
-      gw->_scene->setModified(TRUE);
+      gw->_scene->setModified(true);
     }
   }
 }
@@ -1381,7 +1382,7 @@ void ReportHandler::dbConnect() {
 
     if(dbConnected) {
         // disconnect
-        QSqlDatabase db = QSqlDatabase::database(QSqlDatabase::defaultConnection,FALSE);
+        QSqlDatabase db = QSqlDatabase::database(QSqlDatabase::defaultConnection,false);
         if(db.isValid()) db.close();
         QSqlDatabase::removeDatabase(QSqlDatabase::defaultConnection);
     } else {
@@ -1393,7 +1394,7 @@ void ReportHandler::dbConnect() {
         params.append("build",       OpenRPT::build);
         params.append("databaseURL", OpenRPT::databaseURL);
 
-        login newdlg(0, "", TRUE);
+        login newdlg(0, "", true);
         newdlg.set(params);
 
         if(newdlg.exec() == QDialog::Accepted) {
@@ -1456,11 +1457,11 @@ void ReportHandler::dbConnect() {
       {
         for(QStringList::Iterator pit = paths.begin(); pit != paths.end(); ++pit)
         {
-          qDebug("looking for %s in %s", (*fit).toAscii().data(), (*pit).toAscii().data());
+          qDebug("looking for %s in %s", (*fit).toLatin1().data(), (*pit).toLatin1().data());
           if (translator->load(*fit, *pit))
           {
             qApp->installTranslator(translator);
-            qDebug("installed %s/%s", (*pit).toAscii().data(), (*fit).toAscii().data());
+            qDebug("installed %s/%s", (*pit).toLatin1().data(), (*fit).toLatin1().data());
             translator = new QTranslator(qApp);
             break;
           }
@@ -1477,7 +1478,7 @@ void ReportHandler::dbConnect() {
 }
 
 void ReportHandler::dbLoadDoc() {
-    QSqlDatabase db = QSqlDatabase::database(QSqlDatabase::defaultConnection, FALSE);
+    QSqlDatabase db = QSqlDatabase::database(QSqlDatabase::defaultConnection, false);
     if(db.isValid()) {
         DBFileDialog rptDiag;
         rptDiag.setWindowTitle(tr("Load Report from Database"));
@@ -1493,7 +1494,7 @@ void ReportHandler::dbLoadDoc() {
                 {
                   // setup any variables to let this doc know how it was loaded
                   // so when a save command is issued it knows what to do
-                  rw->_scene->lastSaveToDb = TRUE;
+                  rw->_scene->lastSaveToDb = true;
                   rw->_scene->dbRecordName = rptDiag.getNameById();
                   rw->_scene->dbRecordGrade = rptDiag.getGradeById();
                 }
@@ -1510,7 +1511,7 @@ void ReportHandler::dbLoadDoc() {
 
 void ReportHandler::dbSaveDoc()
 {
-  QSqlDatabase db = QSqlDatabase::database(QSqlDatabase::defaultConnection, FALSE);
+  QSqlDatabase db = QSqlDatabase::database(QSqlDatabase::defaultConnection, false);
   if(db.isValid())
   {
     DocumentWindow * gw = activeDocumentWindow();
@@ -1533,32 +1534,17 @@ void ReportHandler::dbSaveDoc()
 //
 DocumentWindow * ReportHandler::activeDocumentWindow()
 {
-  DocumentWindow * gw = 0;
-  // Using the activeWindow call from QWorkspace is more
-  // reliable cross platform.
-  if(_parentWindowIsWorkspace)
+  if(_mdiParentWindow)
   {
-    /* the obvious
-      return (ReportWindow*)((QWorkspace*)_parentWindow)->activeWindow();
-      doesn't work - bug 5870 - after printing a report with another window,
-      QWorkspace::activeWindow() returns that other window even after
-      the user has clicked back on a ReportWindow
-     */
-    QWidgetList list = ((QWorkspace*)_parentWindow)->windowList(QWorkspace::StackingOrder);
-    int i;
-    for (i = list.size() - 1; i >= 0; i--)
-      if (list.at(i)->inherits("DocumentWindow") || list.at(i)->inherits("ReportWindow"))
-        break;
-
-    if (i >= 0 && list.at(i)->inherits("DocumentWindow"))
-      return static_cast<DocumentWindow*>(list.at(i));
-    return 0;
+    // returns the topmost window, even if not active
+    QList<QMdiSubWindow *> list = _mdiParentWindow->subWindowList(QMdiArea::StackingOrder);
+    return list.isEmpty() ? 0 : qobject_cast<DocumentWindow*>(list.last()->widget());
   }
   else
   {
     for(int it = 0; it < gwList.count(); it++)
     {
-      gw = gwList.at(it);
+      DocumentWindow * gw = gwList.at(it);
       if(gw && QApplication::activeWindow() == gw)
         return gw;
     }
@@ -1571,8 +1557,8 @@ void ReportHandler::addDocumentWindow(DocumentWindow * gw)
   if(gw) {
     gwList.append(gw);
     connect(gw, SIGNAL(destroyed(QObject*)), this, SLOT(removeReportWindow(QObject*)));
-    if(_parentWindowIsWorkspace)
-      ((QWorkspace*)_parentWindow)->addWindow(gw);
+    if(_mdiParentWindow)
+      _mdiParentWindow->addSubWindow(gw);
   }
 }
 
@@ -1587,7 +1573,7 @@ void ReportHandler::removeReportWindow(QObject * obj)
 // dbMenuAboutToShow
 //
 void ReportHandler::dbMenuAboutToShow() {
-    QSqlDatabase db = QSqlDatabase::database(QSqlDatabase::defaultConnection, FALSE);
+    QSqlDatabase db = QSqlDatabase::database(QSqlDatabase::defaultConnection, false);
     if(db.isValid() && db.isOpen() && _databaseElt.isNull()) {
         dbLoadAction->setEnabled(true);
         dbSaveAction->setEnabled(true);
@@ -1719,7 +1705,7 @@ void ReportHandler::sReportsChanged(int pReportid, bool pLocaleUpdate)
   emit reportsChanged(pReportid, pLocaleUpdate);
 }
 
-void ReportHandler::onWinChanged(QWidget* w)
+void ReportHandler::onWinChanged(QMdiSubWindow *w)
 {
   bool show = w ? true : false;
   dbSaveAction->setEnabled(show & dbLoadAction->isEnabled());

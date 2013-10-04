@@ -99,29 +99,29 @@ void TextEditor::setLabelFlags( int f )
     labelPreview->setAlignment((Qt::Alignment)f);
     if((f & Qt::AlignLeft) == Qt::AlignLeft) {
         //qDebug("HAlignLeft 0x%X", AlignLeft);
-        rbHAlignLeft->setChecked(TRUE);
+        rbHAlignLeft->setChecked(true);
     } else if((f & Qt::AlignHCenter) == Qt::AlignHCenter) {
         //qDebug("HAlignCenter 0x%X", AlignHCenter);
-        rbHAlignCenter->setChecked(TRUE);
+        rbHAlignCenter->setChecked(true);
     } else if((f & Qt::AlignRight) == Qt::AlignRight) {
         //qDebug("HAlignRight 0x%X", AlignRight);
-        rbHAlignRight->setChecked(TRUE);
+        rbHAlignRight->setChecked(true);
     } else {
         //qDebug("HAlignNone");
-        rbHAlignNone->setChecked(TRUE);
+        rbHAlignNone->setChecked(true);
     }
     if((f & Qt::AlignTop) == Qt::AlignTop) {
         //qDebug("VAlignTop 0x%X", AlignTop);
-        rbVAlignTop->setChecked(TRUE);
+        rbVAlignTop->setChecked(true);
     } else if((f & Qt::AlignVCenter) == Qt::AlignVCenter) {
         //qDebug("VAlignCenter 0x%X", AlignVCenter);
-        rbVAlignMiddle->setChecked(TRUE);
+        rbVAlignMiddle->setChecked(true);
     } else if((f & Qt::AlignBottom) == Qt::AlignBottom) {
         //qDebug("VAlignBottom 0x%X", AlignBottom);
-        rbVAlignBottom->setChecked(TRUE);
+        rbVAlignBottom->setChecked(true);
     } else {
         //qDebug("VAlignNone");
-        rbVAlignNone->setChecked(TRUE);
+        rbVAlignNone->setChecked(true);
     }
 }
 

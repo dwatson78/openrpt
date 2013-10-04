@@ -73,7 +73,7 @@ int main(int argc, char *argv[])
 
   QTextStream out(stdout, QIODevice::WriteOnly);
 
-  if (application.argc() > 1)
+  if (argc > 1)
   {
     QString databaseURL;
     QString username;
@@ -82,9 +82,9 @@ int main(int argc, char *argv[])
     QString dbServer = QString::null;
 
 
-    for (int counter = 1; counter < application.argc(); counter++)
+    for (int counter = 1; counter < argc; counter++)
     {
-      QString arguments(application.argv()[counter]);
+      QString arguments(argv[counter]);
 
       if (arguments.startsWith("-databaseURL=", Qt::CaseInsensitive))
         databaseURL = arguments.right(arguments.length() - 13);

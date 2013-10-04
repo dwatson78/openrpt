@@ -43,12 +43,12 @@ class ReportGridOptions : public QObject {
         QPointF snapPoint(const QPointF & pos);
 
     public slots:
-        void setVisible(bool yes = TRUE);
+        void setVisible(bool yes = true);
         void show();
         void hide();
         void setXInterval(double i);
         void setYInterval(double i);
-        void setSnap(bool yes = TRUE);
+        void setSnap(bool yes = true);
 
     signals:
         void gridOptionsChanged();

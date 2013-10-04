@@ -3638,7 +3638,7 @@ static struct EmbedImage {
     bool alpha;
     const char *name;
 } embed_image_vec[] = {
-    { 490, 103, 32, (const unsigned char*)openrpt_data, 0, 0, FALSE, "openrpt" },
+    { 490, 103, 32, (const unsigned char*)openrpt_data, 0, 0, false, "openrpt" },
     { 0, 0, 0, 0, 0, 0, 0, 0 }
 };
 
@@ -3657,7 +3657,7 @@ static const QImage& qembed_findImage( const QString& name )
 			    embed_image_vec[i].numColors,
 			    QImage::BigEndian );
 		if ( embed_image_vec[i].alpha )
-		    img->setAlphaBuffer( TRUE );
+		    img->setAlphaBuffer( true );
 		dict.insert( name, img );
 		break;
 	    }

@@ -44,4 +44,4 @@ SOURCES += importwindow.cpp \
            ../../OpenRPT/common/builtinSqlFunctions.cpp \
            main.cpp
 
-QT += xml sql
+QT += xml sql widgets

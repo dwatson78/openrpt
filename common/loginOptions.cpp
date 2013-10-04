@@ -142,7 +142,7 @@ void loginOptions::set(const ParameterList &pParams)
     int index = _driver->findText(protocol,Qt::MatchExactly);
     if(index == -1)
     {
-        qDebug("Error, the protocol %s was not found!", protocol.toAscii().data());
+        qDebug("Error, the protocol %s was not found!", protocol.toLatin1().data());
 	// just set something
 	_driver->setCurrentIndex(0);
     } else {

@@ -177,10 +177,10 @@ bool QuerySourceList::add(QuerySource * qs)
       qs->_inList = this;
       _srcList.append(qs);
       emit updated();
-      return TRUE;
+      return true;
     }
   }
-  return FALSE;
+  return false;
 }
 
 QuerySource *QuerySourceList::remove(int i)

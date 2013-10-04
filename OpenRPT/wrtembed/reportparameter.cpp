@@ -118,7 +118,7 @@ void ReportParameter::setParamData( const ORParameter & param)
   }
   else //if(param.listtype == "dynamic")
   {
-    _dynamicList->setChecked(TRUE);
+    _dynamicList->setChecked(true);
     _stack->setCurrentIndex(1);
     _dynamicQuery->setText(param.query);
   }

@@ -25,6 +25,7 @@
 
 class QColor;
 class QTextDocument;
+class QTextEdit;
 
 class MetaSQLHighlighter : public QSyntaxHighlighter
 {

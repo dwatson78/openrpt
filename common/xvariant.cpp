@@ -114,7 +114,7 @@ QVariant XVariant::decode(const QString & type, const QString & data)
   if(type.isEmpty())
     return v;
 
-  QVariant::Type t = QVariant::nameToType(type.toAscii().data());
+  QVariant::Type t = QVariant::nameToType(type.toLatin1().data());
   switch(t)
   {
     case QVariant::ByteArray:

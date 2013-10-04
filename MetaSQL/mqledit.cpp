@@ -285,7 +285,7 @@ void MQLEdit::helpAbout()
 // user if they would like to save the document before they continue
 // with the operation they are trying to perform.
 //
-// Returns TRUE if the operation can continue otherwise returns FALSE
+// Returns true if the operation can continue otherwise returns false
 // and the calling process should not perform any actions.
 //
 bool MQLEdit::askSaveIfModified()
@@ -384,7 +384,7 @@ void MQLEdit::fileDatabaseConnect()
     if(!OpenRPT::databaseURL.isEmpty())
       params.append("databaseURL", OpenRPT::databaseURL);
 
-    login newdlg(0, "", TRUE);
+    login newdlg(0, "", true);
     newdlg.set(params, 0);
 
     if (newdlg.exec() != QDialog::Rejected)
@@ -579,7 +579,7 @@ bool MQLEdit::databaseSave()
 
   XSqlQuery saveq;
   saveq.prepare("SELECT saveMetasql(:group, :name,"
-                "                   CASE :nonotes WHEN TRUE THEN NULL ELSE E:notes END,"
+                "                   CASE :nonotes WHEN true THEN NULL ELSE E:notes END,"
                 "                   E:query, false, :schema, :grade) AS result;");
   if (_mqlGrade >= 0)
     saveq.bindValue(":grade", _mqlGrade);

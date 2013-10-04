@@ -181,6 +181,13 @@ void OROPage::setBackgroundOpacity(unsigned char o)
 //
 // OROPrimitive
 //
+
+OROPrimitive::OROPrimitive()
+  : _pen(QPen(Qt::black, 0)), _border(QPen(Qt::black, 0))
+{
+  _page = 0;
+}
+
 OROPrimitive::OROPrimitive(ORObject *o, int pType)
   : _type(pType), _pen(o->pen()), _border(o->border()), _brush(o->brush()), _rotation(o->rotation())
 {
