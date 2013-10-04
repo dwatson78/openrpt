@@ -233,7 +233,7 @@ void ORGraphicsSectionDetailGroup::setTitle(const QString & s)
 {
   if(_name != s) {
     _name = s;
-    if(_rsd && _rsd->reportWindow()) _rsd->reportWindow()->setModified(TRUE);
+    if(_rsd && _rsd->reportWindow()) _rsd->reportWindow()->setModified(true);
   }
   _head->setTitle(_name + tr(" Group Header"));
   _foot->setTitle(_name + tr(" Group Footer"));
@@ -243,14 +243,14 @@ void ORGraphicsSectionDetailGroup::setColumn(const QString & s)
 {
   if(_column != s) {
     _column = s;
-    if(_rsd && _rsd->reportWindow()) _rsd->reportWindow()->setModified(TRUE);
+    if(_rsd && _rsd->reportWindow()) _rsd->reportWindow()->setModified(true);
   }
 }
 
 void ORGraphicsSectionDetailGroup::showGroupHead(bool yes)
 {
   if(isGroupHeadShowing() != yes) {
-    if(_rsd && _rsd->reportWindow()) _rsd->reportWindow()->setModified(TRUE);
+    if(_rsd && _rsd->reportWindow()) _rsd->reportWindow()->setModified(true);
   }
   _head->setVisible(yes);
   _rsd->adjustSize();
@@ -261,14 +261,14 @@ void ORGraphicsSectionDetailGroup::setReprintGroupHeader(bool yes)
   if(_reprintGroupHeader != yes)
   {
     _reprintGroupHeader = yes;
-    if(_rsd && _rsd->reportWindow()) _rsd->reportWindow()->setModified(TRUE);
+    if(_rsd && _rsd->reportWindow()) _rsd->reportWindow()->setModified(true);
   }
 }
 
 void ORGraphicsSectionDetailGroup::showGroupFoot(bool yes)
 {
   if(isGroupFootShowing() != yes) {
-    if(_rsd && _rsd->reportWindow()) _rsd->reportWindow()->setModified(TRUE);
+    if(_rsd && _rsd->reportWindow()) _rsd->reportWindow()->setModified(true);
   }
   _foot->setVisible(yes);
   _rsd->adjustSize();
@@ -279,7 +279,7 @@ void ORGraphicsSectionDetailGroup::setResetPageCountAfterGroupFooter(bool yes)
   if(_resetPageCountAfterGroupFooter != yes)
   {
     _resetPageCountAfterGroupFooter = yes;
-    if(_rsd && _rsd->reportWindow()) _rsd->reportWindow()->setModified(TRUE);
+    if(_rsd && _rsd->reportWindow()) _rsd->reportWindow()->setModified(true);
   }
 }
 
@@ -288,7 +288,7 @@ void ORGraphicsSectionDetailGroup::setPageBreak(int pb)
   if(_pagebreak != pb)
   {
     _pagebreak = pb;
-    if(_rsd && _rsd->reportWindow()) _rsd->reportWindow()->setModified(TRUE);
+    if(_rsd && _rsd->reportWindow()) _rsd->reportWindow()->setModified(true);
   }
 }
 
@@ -324,7 +324,7 @@ void ORGraphicsSectionDetail::setTitle(const QString & s)
 {
   if(_name != s) {
     _name = s;
-    if(_rw) _rw->setModified(TRUE);
+    if(_rw) _rw->setModified(true);
   }
   _detail->setTitle(_name + " Detail");
 }
@@ -333,7 +333,7 @@ void ORGraphicsSectionDetail::setQuery(const QString & s)
 {
   if(_query != s) {
     _query = s;
-    if(_rw) _rw->setModified(TRUE);
+    if(_rw) _rw->setModified(true);
   }
 }
 
@@ -428,9 +428,9 @@ void ORGraphicsSectionDetail::initFromXML(QDomNode & section)
   // some code to handle old style defs
   QString o_name = "unnamed";
   QString o_column = QString::null;
-  bool old_head = FALSE;
+  bool old_head = false;
   QDomNode o_head;
-  bool old_foot = FALSE;
+  bool old_foot = false;
   QDomNode o_foot;
 
   for(int i = 0; i < nl.count(); i++) {
@@ -447,8 +447,8 @@ void ORGraphicsSectionDetail::initFromXML(QDomNode & section)
       ORGraphicsSectionDetailGroup * rsdg = new ORGraphicsSectionDetailGroup("unnamed", this, this);
       QDomNodeList gnl = node.childNodes();
       QDomNode gnode;
-      bool show_head = FALSE;
-      bool show_foot = FALSE;
+      bool show_head = false;
+      bool show_foot = false;
       for(int gi = 0; gi < gnl.count(); gi++) {
         gnode = gnl.item(gi);
         if(gnode.nodeName() == "name") {
@@ -473,8 +473,8 @@ void ORGraphicsSectionDetail::initFromXML(QDomNode & section)
           }
         } else if(gnode.nodeName() == "head") {
           rsdg->getGroupHead()->initFromXML(gnode);
-          rsdg->showGroupHead(TRUE);
-          show_head = TRUE;
+          rsdg->showGroupHead(true);
+          show_head = true;
           QDomElement elemThis = gnode.toElement();
           QString n = elemThis.attribute("reprintGroupHeader");
           if("true" == n)
@@ -483,8 +483,8 @@ void ORGraphicsSectionDetail::initFromXML(QDomNode & section)
             rsdg->setReprintGroupHeader(false);
         } else if(gnode.nodeName() == "foot") {
           rsdg->getGroupFoot()->initFromXML(gnode);
-          rsdg->showGroupFoot(TRUE);
-          show_foot = TRUE;
+          rsdg->showGroupFoot(true);
+          show_foot = true;
         } else {
           qDebug("encountered unknown element while parsing group element: %s", gnode.nodeName().toLatin1().constData());
         }
@@ -494,10 +494,10 @@ void ORGraphicsSectionDetail::initFromXML(QDomNode & section)
       rsdg->showGroupFoot(show_foot);
     } else if(n == "grouphead") {
       o_head = node;
-      old_head = TRUE;
+      old_head = true;
     } else if(n == "groupfoot") {
       o_foot = node;
-      old_foot = TRUE;
+      old_foot = true;
     } else if(n == "detail") {
       // need to pull out the query key values
       QDomNode key = node.namedItem("key");
@@ -557,7 +557,7 @@ void ORGraphicsSectionDetail::insertSection(int idx, ORGraphicsSectionDetailGrou
 {
   groupList.insert(idx, rsd);
 
-  if(_rw) _rw->setModified(TRUE);
+  if(_rw) _rw->setModified(true);
   adjustSize();
 }
 
@@ -575,8 +575,8 @@ void ORGraphicsSectionDetail::removeSection(int idx, bool del)
 {
   ORGraphicsSectionDetailGroup * rsd = groupList.at(idx);
   groupList.removeAt(idx);
-  if(_rw) _rw->setModified(TRUE);
-  if(del == TRUE) delete rsd;
+  if(_rw) _rw->setModified(true);
+  if(del == true) delete rsd;
   adjustSize();
 }
 

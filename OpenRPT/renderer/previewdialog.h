@@ -37,6 +37,7 @@
 class PreviewWidget;
 class QAbstractScrollArea;
 class ORODocument;
+class QPrinter;
 
 ///////////////////////////////////////////////////////////////////////////////
 /// \class PreviewDialog

@@ -29,7 +29,7 @@ DESTDIR = ../../lib
 MOC_DIR = tmp
 UI_DIR = tmp
 OBJECTS_DIR = tmp
-QT += xml sql
+QT += xml sql widgets printsupport
 #VERSION = 0.1.0
 
 LIBS += -L../../lib -lDmtx_Library

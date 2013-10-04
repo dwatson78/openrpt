@@ -149,6 +149,8 @@ class OROPrimitive
   friend class OROPage;
 
   public:
+    OROPrimitive();
+    OROPrimitive(ORObject *o, int pType);
     virtual ~OROPrimitive();
 
     // Returns the type of the primitive which should be
@@ -174,9 +176,6 @@ class OROPrimitive
     void setRotationAxis(const QPointF p);
 
     void drawRect(QRectF rc, QPainter* painter, int printResolution);
-
-  protected:
-    OROPrimitive(ORObject *o, int);
 
   private:
     OROPage * _page;

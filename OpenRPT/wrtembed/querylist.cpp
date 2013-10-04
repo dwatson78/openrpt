@@ -138,7 +138,7 @@ void QueryList::btnAdd_clicked()
     QString mgroup = qe._mqlGroup->currentText();
     QString mname  = qe._mqlName->currentText();
     QuerySource * qs = new QuerySource(nname, nquery, nmql, mgroup, mname);
-    if(qsList->add(qs) == TRUE)
+    if(qsList->add(qs) == true)
     {
       lbQuerys->addItem(nname);
     }

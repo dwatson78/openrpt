@@ -58,19 +58,19 @@ RenderWindow::RenderWindow(QWidget* parent, Qt::WindowFlags fl)
   (void)statusBar();
 
   // signals and slots connections
-  connect(fileOpenAction, SIGNAL(activated()), this, SLOT(fileOpen()));
-  connect(fileLoadFromDB, SIGNAL(activated()), this, SLOT(fileLoad()));
-  connect(filePrintPreviewAction, SIGNAL(activated()), this, SLOT(filePreview()));
-  connect(filePrintAction, SIGNAL(activated()), this, SLOT(filePrint()));
-  connect(filePrintToPDFAction, SIGNAL(activated()), this, SLOT(filePrintToPDF()));
-  connect(fileExitAction, SIGNAL(activated()), this, SLOT(fileExit()));
-  connect(helpAboutAction, SIGNAL(activated()), this, SLOT(helpAbout()));
+  connect(fileOpenAction, SIGNAL(triggered()), this, SLOT(fileOpen()));
+  connect(fileLoadFromDB, SIGNAL(triggered()), this, SLOT(fileLoad()));
+  connect(filePrintPreviewAction, SIGNAL(triggered()), this, SLOT(filePreview()));
+  connect(filePrintAction, SIGNAL(triggered()), this, SLOT(filePrint()));
+  connect(filePrintToPDFAction, SIGNAL(triggered()), this, SLOT(filePrintToPDF()));
+  connect(fileExitAction, SIGNAL(triggered()), this, SLOT(fileExit()));
+  connect(helpAboutAction, SIGNAL(triggered()), this, SLOT(helpAbout()));
   connect(_delete, SIGNAL(clicked()), this, SLOT(sDelete()));
   connect(_edit, SIGNAL(clicked()), this, SLOT(sEdit()));
   connect(_add, SIGNAL(clicked()), this, SLOT(sAdd()));
   connect(_table, SIGNAL(itemSelectionChanged()), this, SLOT(sSelectionChanged()));
   connect(_list, SIGNAL(clicked()), this, SLOT(sList()));
-  _autoPrint = FALSE;                    //AUTOPRINT
+  _autoPrint = false;                    //AUTOPRINT
 }
 
 RenderWindow::~RenderWindow()

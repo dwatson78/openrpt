@@ -48,9 +48,9 @@ Graph::Graph(QWidget * parent, const char * name) : QWidget(parent)
     _minValue = 0.0;
     _maxValue = 100.0;
 
-    _drawBars = TRUE;
-    _drawLines = FALSE;
-    _drawPoints = FALSE;
+    _drawBars = true;
+    _drawLines = false;
+    _drawPoints = false;
 
     _titleFont = 0;
     _dataLabelFont = 0;
@@ -58,8 +58,8 @@ Graph::Graph(QWidget * parent, const char * name) : QWidget(parent)
     _valueLabelFont = 0;
     _valueFont = 0;
 
-    _autoMinMax = TRUE;
-    _autoRepaint = TRUE;
+    _autoMinMax = true;
+    _autoRepaint = true;
 }
 
 Graph::~Graph() {
@@ -294,9 +294,9 @@ void Graph::setAutoRepaint(bool yes) {
 bool Graph::autoRepaint() { return _autoRepaint; }
 
 void Graph::populateFromResult(QSqlQuery & qry) {
-    bool valid = FALSE;
+    bool valid = false;
     bool old_repaint = autoRepaint();
-    setAutoRepaint(FALSE);
+    setAutoRepaint(false);
     QVariant var;
     double val;
     int cols = qry.record().count();
@@ -465,7 +465,7 @@ void Graph::paintEvent(QPaintEvent * ) {
 
             QMapIterator<int, double> sit(ref.second);
             paint.save();
-            if(drawBars() == TRUE) {
+            if(drawBars() == true) {
                 TSetValue tval;
                 QMap<double, TSetValue> sort_map;
                 sit = ref.second;
@@ -493,7 +493,7 @@ void Graph::paintEvent(QPaintEvent * ) {
                     }
                 }
             }
-            if(drawLines() == TRUE) {
+            if(drawLines() == true) {
                 this_map.clear();
                 sit = ref.second;
                 while(sit.hasNext())
@@ -519,7 +519,7 @@ void Graph::paintEvent(QPaintEvent * ) {
                 }
                 last_map = this_map;
             }
-            if(drawPoints() == TRUE) {
+            if(drawPoints() == true) {
                 sit = ref.second;
                 while(sit.hasNext())
                 {

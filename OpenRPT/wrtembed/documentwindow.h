@@ -22,6 +22,7 @@
 #define __DOCUMENTWINDOW_H__
 
 #include <QtGui>
+#include <QMainWindow>
 
 class DocumentScene;
 class DocumentView;

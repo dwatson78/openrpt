@@ -22,7 +22,7 @@ include( ../global.pri )
 
 TEMPLATE = lib
 CONFIG  += qt warn_on staticlib
-QT      +=  sql xml
+QT      +=  sql xml widgets printsupport
 DEFINES += MAKELIB
 
 INCLUDEPATH += ../common ../../openrpt-build-desktop/common

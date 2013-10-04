@@ -28,7 +28,7 @@
 //
 // Prototypes
 //
-class QWorkspace;
+class QMdiArea;
 class QAction;
 class ReportHandler;
 class QMenu;
@@ -52,7 +52,7 @@ class ReportWriterWindow : public QMainWindow {
         virtual void timerEvent(QTimerEvent*);
 
     private:
-        QWorkspace * ws;
+        QMdiArea * ws;
         int dbTimerId;
 
         QAction * fileExitAction;

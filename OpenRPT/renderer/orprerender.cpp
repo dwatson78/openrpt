@@ -26,6 +26,7 @@
 #include "graph.h"
 #include "crosstab.h"
 #include "reportprinter.h"
+#include "textelementsplitter.h"
 
 #include <QPrinter>
 #include <QFontMetrics>
@@ -40,8 +41,6 @@
 #include <pagesizeinfo.h>
 #include <labelsizeinfo.h>
 #include <quuencode.h>
-
-#define CLIPMARGIN 10
 
 //
 // ORPreRenderPrivate
@@ -116,10 +115,12 @@ class ORPreRenderPrivate {
     void createNewPage();
     qreal finishCurPage(bool = false);
     qreal finishCurPageSize(bool = false);
+    qreal maxDetailSectionY();
 
     void renderDetailSection(ORDetailSectionData &);
     qreal renderSection(const ORSectionData &);
-    void addTextPrimitive(ORObject *&element, QPointF pos, QSizeF size, int align, QString text, QFont font = QFont());
+    qreal renderTextElements(QList<ORObject*> elemList, qreal sectionHeight);
+    void addTextPrimitive(ORObject *element, QPointF pos, QSizeF size, int align, QString text, QFont font = QFont());
     QString evaluateField(ORFieldData* f);
     qreal renderSectionSize(const ORSectionData &, bool = false);
 
@@ -334,9 +335,20 @@ qreal ORPreRenderPrivate::finishCurPageSize(bool lastPage)
   return retval;
 }
 
+qreal ORPreRenderPrivate::maxDetailSectionY()
+{
+    int l = (_detailQuery ? _detailQuery->at() : 0);
+    int qs = (_detailQuery ? _detailQuery->size() : 1);
+    qreal sizeLimit = _maxHeight - _bottomMargin;
+    if(!_subtotContextPageFooter)
+        sizeLimit = _maxHeight - _bottomMargin - finishCurPageSize((l+1 == qs));
+
+    return sizeLimit;
+}
+
 //
 // calculateRemainingPageSize
-//   Calculate the remaining space on the page after printing the footers and
+//   Calculate the remaining space on the page after printing the fo oters and
 //   applying the margins
 //
 // ToDo: How to handle last page when this function is used to calculate a
@@ -640,114 +652,36 @@ void ORPreRenderPrivate::renderDetailSection(ORDetailSectionData & detailData)
 
 qreal ORPreRenderPrivate::renderSectionSize(const ORSectionData & sectionData, bool ignoreTextArea)
 {
-  qreal intHeight = sectionData.height / 100.0;
+  qreal sectionHeight = sectionData.height / 100.0;
 
   if(sectionData.objects.count() == 0 || ignoreTextArea)
-    return intHeight;
+    return sectionHeight;
 
-  ORObject * elemThis;
   for(int it = 0; it < sectionData.objects.size(); ++it)
   {
-    elemThis = sectionData.objects.at(it);
-    // TODO: See if this can be simplified anymore than it already is.
-    //       All we need to know is how much stretch we are going to get.
-    if (elemThis->isText())
+    ORObject * element = sectionData.objects.at(it);
+    if (element->isText())
     {
       orData       dataThis;
-      ORTextData * t = elemThis->toText();
+      ORTextData * t = element->toText();
 
       populateData(t->data, dataThis);
 
-      QPointF pos = t->rect.topLeft();
-      QSizeF size = t->rect.size();
-      pos /= 100.0;
-      pos += QPointF(_leftMargin, _yOffset);
-      size /= 100.0;
+      TextElementSplitter textSplitter(element, dataThis.getValue(), _leftMargin, _yOffset);
 
-      QRectF trf(pos, size);
-
-      QString qstrValue;
-      qreal   intStretch      = trf.top() - _yOffset;
-      qreal   intRectHeight   = trf.height();
-
-      qstrValue = dataThis.getValue();
-      if (qstrValue.length())
+      while (!textSplitter.endOfText())
       {
-        int pos = 0;
-        int idx;
-        QChar separator;
-        QRegExp re("\\s");
-        QImage prnt(1, 1, QImage::Format_RGB32);
-        QFontMetrics fm(t->font, &prnt);
+        textSplitter.nextLine();
+      }
 
-        int intRectWidth = (int)(trf.width() * prnt.logicalDpiX()) - CLIPMARGIN;
-
-        QRectF rect = trf;
-#ifdef Q_WS_MAC // bug 13284, 15118
-        if(t->align & Qt::AlignRight)
-          rect.setLeft(rect.left() - CLIPMARGIN / 100.0);
-        else
-          rect.setRight(rect.right() + CLIPMARGIN / 100.0);
-#endif
-        // insert spaces into qstrValue to allow it to wrap
-        rect.setWidth((qreal)intRectWidth / (qreal)prnt.logicalDpiX());
-
-        QPainter imagepainter(&prnt);
-        OROTextBox tmpbox(elemThis);
-        tmpbox.setPosition(rect.topLeft());
-        tmpbox.setSize(rect.size());
-        tmpbox.setFont(t->font);
-        tmpbox.setText(qstrValue);
-        tmpbox.setFlags(t->align | Qt::TextWordWrap);
-        tmpbox.setRotation(t->rotation());
-        qstrValue = tmpbox.textForcedToWrap(&imagepainter);
-
-        while (qstrValue.length())
-        {
-          idx = re.indexIn(qstrValue, pos);
-          if (idx == -1)
-          {
-            idx = qstrValue.length();
-            separator = QChar('\n');
-          }
-          else
-            separator = qstrValue.at(idx);
-
-          if (fm.boundingRect(qstrValue.left(idx)).width() < intRectWidth || pos == 0)
-          {
-            pos = idx + 1;
-            if (separator == '\n')
-            {
-              qstrValue = qstrValue.mid(idx + 1, qstrValue.length());
-              pos = 0;
-
-              intStretch += intRectHeight;
-            }
-          }
-          else
-          {
-            qstrValue = qstrValue.mid(pos, qstrValue.length());
-            pos = 0;
-
-            intStretch += intRectHeight;
-          }
-        }
-
-        intStretch += (t->bottompad / 100.0);
-
-        if (intStretch > intHeight)
-          intHeight = intStretch;
+      if (textSplitter.textBottomRelativePos() > sectionHeight)
+      {
+        sectionHeight = textSplitter.textBottomRelativePos();
       }
     }
-#ifdef DEBUG
-    else
-    {
-      qDebug("Encountered an unknown element while calculating the section size.");
-    }
-#endif
   }
 
-  return intHeight;
+  return sectionHeight;
 }
 
 qreal ORPreRenderPrivate::renderSection(const ORSectionData & sectionData)
@@ -1092,133 +1026,8 @@ qreal ORPreRenderPrivate::renderSection(const ORSectionData & sectionData)
       qDebug("Encountered an unknown element while rendering a section.");
     }
   }
-  // this may not work so well if there are multiple text area's in a single section and they cross pages
-  foreach (ORObject *elemThis, textelem)
-  {
-        orData       dataThis;
-        ORTextData * t = elemThis->toText();
 
-        populateData(t->data, dataThis);
-
-        QPointF pos = t->rect.topLeft();
-        QSizeF size = t->rect.size();
-        pos /= 100.0;
-        pos += QPointF(_leftMargin, _yOffset);
-        size /= 100.0;
-
-        QRectF trf(pos, size);
-
-        QString qstrValue;
-        int     intLineCounter  = 0;
-        qreal   intStretch      = trf.top() - _yOffset;
-        qreal   intBaseTop      = trf.top();
-        qreal   intRectHeight   = trf.height();
-
-        qstrValue = dataThis.getValue();
-        if (qstrValue.length())
-        {
-          QRectF rect = trf;
-#ifdef Q_WS_MAC // bug 13284, 15118
-          if(t->align & Qt::AlignRight)
-            rect.setLeft(rect.left() - CLIPMARGIN / 100.0);
-          else
-            rect.setRight(rect.right() + CLIPMARGIN / 100.0);
-#endif
-
-          int pos = 0;
-          int idx;
-          QChar separator;
-          QRegExp re("\\s");
-          QImage prnt(1, 1, QImage::Format_RGB32);
-
-          QFontMetrics fm(t->font, &prnt);
-
-          int intRectWidth = (int)(trf.width() * prnt.logicalDpiX()) - CLIPMARGIN;
-          int l = (_detailQuery ? _detailQuery->at() : 0);
-          int qs = (_detailQuery ? _detailQuery->size() : 1);
-          qreal sizeLimit = _maxHeight - _bottomMargin;
-          if(!_subtotContextPageFooter)
-            sizeLimit = _maxHeight - _bottomMargin - finishCurPageSize((l+1 == qs));
-
-          // insert spaces into qstrValue to allow it to wrap
-          rect.setWidth((qreal)intRectWidth / (qreal)prnt.logicalDpiX());
-
-          QPainter imagepainter(&prnt);
-          OROTextBox tmpbox(elemThis);
-          tmpbox.setPosition(rect.topLeft());
-          tmpbox.setSize(rect.size());
-          tmpbox.setFont(t->font);
-          tmpbox.setText(qstrValue);
-          tmpbox.setFlags(t->align | Qt::TextWordWrap);
-          tmpbox.setRotation(t->rotation());
-          qstrValue = tmpbox.textForcedToWrap(&imagepainter);
-
-          while(qstrValue.length())
-          {
-            // Do we need to go to the next page for this section
-            if ( !_subtotContextPageFooter && ((intBaseTop + (intLineCounter * intRectHeight) + intRectHeight) >= sizeLimit) )
-            {
-              if(l > 0 && _detailQuery)
-                _detailQuery->prev();
-              createNewPage();
-              if(l > 0 && _detailQuery)
-                _detailQuery->next();
-              intBaseTop = _yOffset;
-              intLineCounter = 0;
-              intStretch = 0;
-              intHeight = 0;
-              sizeLimit = _maxHeight - _bottomMargin - finishCurPageSize((l+1 == qs));
-            }
-
-            idx = re.indexIn(qstrValue, pos);
-            if(idx == -1)
-            {
-              idx = qstrValue.length();
-              separator = QChar('\n');
-            }
-            else
-              separator = qstrValue.at(idx);
-
-            if(fm.boundingRect(qstrValue.left(idx)).width() < intRectWidth || pos == 0)
-            {
-              pos = idx + 1;
-              if(separator == '\n')
-              {
-                QString line = qstrValue.left(idx);
-                qstrValue = qstrValue.mid(idx+1,qstrValue.length());
-                pos = 0;
-
-                rect.setTop(intBaseTop + (intLineCounter * intRectHeight));
-                rect.setBottom(rect.top() + intRectHeight);
-
-                addTextPrimitive(elemThis, rect.topLeft(), rect.size(), t->align, line, t->font);
-
-                intStretch += intRectHeight;
-                intLineCounter++;
-              }
-            }
-            else
-            {
-              QString line = qstrValue.left(pos - 1);
-              qstrValue = qstrValue.mid(pos,qstrValue.length());
-              pos = 0;
-
-              rect.setTop(intBaseTop + (intLineCounter * intRectHeight));
-              rect.setBottom(rect.top() + intRectHeight);
-
-              addTextPrimitive(elemThis, rect.topLeft(), rect.size(), t->align, line, t->font);
-
-              intStretch += intRectHeight;
-              intLineCounter++;
-            }
-          }
-
-          intStretch += (t->bottompad / 100.0);
-
-          if (intStretch > intHeight)
-            intHeight = intStretch;
-        }
-  }
+  intHeight = renderTextElements(textelem, intHeight);
 
   _yOffset += intHeight;
 
@@ -1230,7 +1039,78 @@ qreal ORPreRenderPrivate::renderSection(const ORSectionData & sectionData)
 }
 
 
-void ORPreRenderPrivate::addTextPrimitive(ORObject *&element, QPointF pos, QSizeF size, int align, QString text, QFont font)
+qreal ORPreRenderPrivate::renderTextElements(QList<ORObject*> elemList, qreal sectionHeight)
+{
+    QList<TextElementSplitter> splitters;
+
+    foreach (ORObject *elem, elemList)
+    {
+        orData       dataThis;
+        ORTextData * t = elem->toText();
+
+        populateData(t->data, dataThis);
+
+        splitters.append(TextElementSplitter(elem, dataThis.getValue(),
+                                                 _leftMargin, _yOffset, maxDetailSectionY()));
+    }
+
+    while (!splitters.isEmpty())
+    {
+        bool newPageRequested = false;
+
+        for (int i = 0; i < splitters.size(); i++)
+        {
+            TextElementSplitter *splitter = &(splitters[i]);
+
+            while (!splitter->endOfText() && !splitter->endOfPage())
+            {
+                splitter->nextLine();
+
+                addTextPrimitive(splitter->element(),
+                                 splitter->currentLineRect().topLeft(),
+                                 splitter->currentLineRect().size(),
+                                 splitter->element()->align,
+                                 splitter->currentLine(),
+                                 splitter->element()->font);
+
+            }
+
+            if (splitter->textBottomRelativePos() > sectionHeight)
+                sectionHeight = splitter->textBottomRelativePos();
+
+            if(splitter->endOfText())
+            {
+                splitters.removeAt(i);
+                i--;
+            }
+            else if (splitter->endOfPage())
+            {
+                newPageRequested = true;
+            }
+        }
+
+        if(newPageRequested && !_subtotContextPageFooter)
+        {
+            int l = _detailQuery ? _detailQuery->at() : 0;
+            if(l > 0)
+              _detailQuery->prev();
+            createNewPage();
+            if(l > 0)
+              _detailQuery->next();
+
+            for (int i = 0; i < splitters.size(); i++)
+            {
+                splitters[i].newPage(_yOffset);
+            }
+
+            sectionHeight = 0;
+        }
+    }
+
+    return sectionHeight;
+}
+
+void ORPreRenderPrivate::addTextPrimitive(ORObject *element, QPointF pos, QSizeF size, int align, QString text, QFont font)
 {
   OROTextBox * tb = new OROTextBox(element);
   tb->setPosition(pos);
@@ -1960,4 +1840,3 @@ OROTextBox* PostProcText::textBox()
 {
   return _textBox;
 }
-

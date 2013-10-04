@@ -93,7 +93,7 @@ int codeIndex(QChar code) {
     // we are a case insensitive search
     code = code.toUpper();
     for(int idx = 0; _3of9codes[idx].code != '\0'; idx++) {
-        if(_3of9codes[idx].code == code.toAscii()) return idx;
+        if(_3of9codes[idx].code == code.toLatin1()) return idx;
     }
     return -1;  // couldn't find it
 }

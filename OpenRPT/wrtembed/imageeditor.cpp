@@ -93,9 +93,9 @@ bool ImageEditor::isInline()
 
 void ImageEditor::setMode( QString m)
 {
-    if(m == "clip") rbClip->setChecked(TRUE);
-    else if(m == "stretch") rbStretch->setChecked(TRUE);
-    else rbClip->setChecked(TRUE);
+    if(m == "clip") rbClip->setChecked(true);
+    else if(m == "stretch") rbStretch->setChecked(true);
+    else rbClip->setChecked(true);
 }
 
 void ImageEditor::setInline( bool yes )

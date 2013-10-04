@@ -56,7 +56,7 @@ void ColorList::_btnAdd_clicked()
     }
     ColorEditor ce(this);
 
-    bool exitLoop = FALSE;
+    bool exitLoop = false;
     while (!exitLoop)
     {
         if(ce.exec() == QDialog::Accepted) {
@@ -75,10 +75,10 @@ void ColorList::_btnAdd_clicked()
             {
               _colorMap->insert(name, color);
               _lbColors->addItem(name);
-              exitLoop = TRUE;
+              exitLoop = true;
             }
         } else {
-            exitLoop = TRUE;
+            exitLoop = true;
         }
     }
 }
@@ -94,7 +94,7 @@ void ColorList::_lbColors_dblClick( QListWidgetItem * item )
         ColorEditor ce(this);
         ce.setColorName(name);
         ce.setColor((*_colorMap)[name]);
-        bool exitLoop = FALSE;
+        bool exitLoop = false;
         while(!exitLoop) {
             if(ce.exec() == QDialog::Accepted) {
                 QString new_name = ce.getColorName();
@@ -118,10 +118,10 @@ void ColorList::_lbColors_dblClick( QListWidgetItem * item )
 
                     _colorMap->insert(name, new_color);
 
-                    exitLoop = TRUE;
+                    exitLoop = true;
                 }
             } else {
-                exitLoop = TRUE;
+                exitLoop = true;
             }
         }
     }

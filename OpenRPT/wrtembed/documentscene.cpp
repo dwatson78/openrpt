@@ -40,6 +40,9 @@
 #include <xsqlquery.h>
 
 #include <QSqlError>
+#include <QMessageBox>
+#include <QFileDialog>
+#include <QMenu>
 
 DocumentScene::DocumentScene(bool newDoc, ReportHandler *handler, QObject * parent)
   : QGraphicsScene(parent), _undoIndex(0), _handler(handler), _loadingInProgress(false)
@@ -47,7 +50,7 @@ DocumentScene::DocumentScene(bool newDoc, ReportHandler *handler, QObject * pare
   _loadingInProgress = true;
   _gridOptions = 0;
   _scaledTo = 1.0;
-  lastSaveToDb = FALSE;
+  lastSaveToDb = false;
   dbRecordGrade = -1;
   _pageOptions = 0;
   
@@ -637,7 +640,7 @@ bool DocumentScene::undo()
         loadDocument(_snapshots.at(_undoIndex-1).documentElement(), _parentWindow, false);
         _undoIndex --;
         if(_undoIndex==0) {
-            setModified(FALSE);
+            setModified(false);
         }
         return true;
     }
@@ -1895,7 +1898,7 @@ void DocumentScene::drawForeground(QPainter * painter, const QRectF & rect)
 
     painter->save();
     QColor c("gray");
-    QPen p(c);
+    QPen p(c, 0);
     painter->setPen(p);
     for(int x = xs; x < xe; x++)
     {
@@ -2106,9 +2109,9 @@ void DocumentScene::loadDocument(const QDomElement &root, QWidget *parent, bool 
             } else if(n == "labeltype") {
                 pageOptions()->setLabelType(it.firstChild().nodeValue());
             } else if(n == "portrait") {
-                pageOptions()->setPortrait(TRUE);
+                pageOptions()->setPortrait(true);
             } else if(n == "landscape") {
-                pageOptions()->setPortrait(FALSE);
+                pageOptions()->setPortrait(false);
             } else if(n == "topmargin") {
                 pageOptions()->setMarginTop(it.firstChild().nodeValue().toDouble() / 100.0);
             } else if(n == "bottommargin") {
@@ -2277,10 +2280,10 @@ void DocumentScene::loadDocument(const QDomElement &root, QWidget *parent, bool 
     if(loadFromfile) { // init stack with a first snapshot to allow undoing of first modification
         _snapshots.clear();
         recordSnapshot();
-        setModified(FALSE);
+        setModified(false);
     }
     else {
-        setModified(TRUE);
+        setModified(true);
     }
     _loadingInProgress = false;
 }

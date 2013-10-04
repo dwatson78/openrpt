@@ -39,7 +39,7 @@ int main(int argc, char* argv[]) {
 
     QApplication app(argc, argv);
 
-    bool haveDB = FALSE;
+    bool haveDB = false;
 
     QSqlDatabase db = QSqlDatabase::addDatabase("QPSQL");
     if(db.isValid()) {
@@ -48,7 +48,7 @@ int main(int argc, char* argv[]) {
         db.setPassword("password");
         db.setHostName("localhost");
         if(db.open()) {
-            haveDB = TRUE;
+            haveDB = true;
         } else {
             QSqlError err = db.lastError();
             qDebug("Driver:   %s", err.driverText().toLatin1().data());

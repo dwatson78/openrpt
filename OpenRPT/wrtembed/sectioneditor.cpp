@@ -114,7 +114,7 @@ void SectionEditor::btnEdit_clicked()
     dsd->cbQuery->init(scene->qsList, rsd->query(), false);
     
     // because of some changes we take the changes regardless
-    bool exitLoop = FALSE;
+    bool exitLoop = false;
     while(!exitLoop) {
         dsd->exec();
     
@@ -137,7 +137,7 @@ void SectionEditor::btnEdit_clicked()
             else
               rsd->setPageBreak(ORGraphicsSectionDetail::BreakNone);
 
-            exitLoop = TRUE;
+            exitLoop = true;
         }
     }
   }
@@ -181,7 +181,7 @@ void SectionEditor::brnMoveDown_clicked()
 {
   // get the selectged item and move it down in the list
   int idx = lbSections->currentRow();
-  if(idx == (int)(lbSections->count() - 1))
+  if(idx < 0 || idx == (int)(lbSections->count() - 1))
     return;
   QString s = lbSections->item(idx)->text();
   lbSections->takeItem(idx);
@@ -191,7 +191,7 @@ void SectionEditor::brnMoveDown_clicked()
     ORGraphicsSectionDetail * rsd = scene->getSection(idx);
     scene->removeSection(idx);
     scene->insertSection(idx+1,rsd);
-    scene->setModified(TRUE);
+    scene->setModified(true);
   }
 }
 

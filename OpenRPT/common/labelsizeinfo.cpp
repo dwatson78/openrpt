@@ -60,7 +60,7 @@ const LabelSizeInfo & LabelSizeInfo::getByName(const QString & name)
 
   if (xqry.first())
   {
-    __label._null = FALSE;
+    __label._null = false;
     __label._name    = xqry.value("labeldef_name").toString();
     __label._paper   = xqry.value("labeldef_papersize").toString();
     __label._columns = xqry.value("labeldef_columns").toInt();
@@ -103,13 +103,13 @@ QStringList LabelSizeInfo::getLabelNames()
 
 bool LabelSizeInfo::areLabelsEditable()
 {
-  bool editable = FALSE;
+  bool editable = false;
   XSqlQuery xqry("SELECT labeldef_id FROM labeldef LIMIT 1");
   xqry.exec();
 
   if (xqry.lastError().type() == QSqlError::NoError)
   {
-    editable = TRUE;
+    editable = true;
   }
   return editable;
 }
@@ -133,7 +133,7 @@ LabelSizeInfo::LabelSizeInfo(const QString & n, const QString & p, int c,
   _xgap = xg;
   _ygap = yg;
 
-  _null = FALSE;
+  _null = false;
 }
 
 LabelSizeInfo::LabelSizeInfo()
@@ -153,7 +153,7 @@ LabelSizeInfo::LabelSizeInfo()
   _xgap = 0;
   _ygap = 0;
 
-  _null = TRUE;
+  _null = true;
 }
 
 LabelSizeInfo::~LabelSizeInfo()

@@ -55,7 +55,7 @@ class orReport {
     ~orReport();
 
     bool    render(QPainter *, QPrinter * = 0);
-    bool    print(QPrinter *prtThis = 0, bool boolSetupPrinter = TRUE, bool showPreview = false, QWidget *parent = 0);
+    bool    print(QPrinter *prtThis = 0, bool boolSetupPrinter = true, bool showPreview = false, QWidget *parent = 0);
     bool    exportToPDF( const QString& fileName );
 
     static bool    beginMultiPrint(QPrinter *);

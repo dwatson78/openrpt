@@ -32,7 +32,7 @@ public:
   QueryComboBox(QWidget *parent);
   ~QueryComboBox();
 
-  void init(QuerySourceList * qsl, const QString &query, bool paramAndContextQueries=TRUE);
+  void init(QuerySourceList * qsl, const QString &query, bool paramAndContextQueries=true);
   QString currentQuery();
 
 };

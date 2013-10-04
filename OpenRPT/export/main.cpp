@@ -38,16 +38,16 @@ int main(int argc, char *argv[])
   QCoreApplication application(argc, argv);
   application.addLibraryPath(".");
 
-  if (application.argc() > 1)
+  if (argc > 1)
   {
     QString databaseURL;
     QString username;
     QString passwd;
     QString arguments;
 
-    for (int counter = 1; counter < application.argc(); counter++)
+    for (int counter = 1; counter < argc; counter++)
     {
-      arguments = QString(application.argv()[counter]);
+      arguments = QString(argv[counter]);
 
       if (arguments.startsWith("-databaseURL=", Qt::CaseInsensitive))
         databaseURL = arguments.right(arguments.length() - 13);
@@ -73,7 +73,7 @@ int main(int argc, char *argv[])
       }
 
 //  Try to connect to the Database
-      bool valport = FALSE;
+      bool valport = false;
       int iport = port.toInt(&valport);
       if(!valport) iport = 5432;
       db.setUserName(username);

@@ -22,6 +22,8 @@
 #define __GRAPHICSSECTION_H__
 
 #include <QtGui>
+#include <QGraphicsSceneMouseEvent>
+#include <QGraphicsRectItem>
 #include <QDomDocument>
 #include <QList>
 
@@ -98,10 +100,10 @@ class ORGraphicsSectionDetailGroup : public QObject
 
     void setTitle(const QString & s);
     void setColumn(const QString &);
-    void showGroupHead(bool yes = TRUE);
-    void setReprintGroupHeader(bool yes = FALSE);
-    void showGroupFoot(bool yes = TRUE);
-    void setResetPageCountAfterGroupFooter(bool yes = FALSE);
+    void showGroupHead(bool yes = true);
+    void setReprintGroupHeader(bool yes = false);
+    void showGroupFoot(bool yes = true);
+    void setResetPageCountAfterGroupFooter(bool yes = false);
     void setPageBreak(int);
 
     QString getTitle() const { return _name; }
@@ -164,7 +166,7 @@ class ORGraphicsSectionDetail : public QObject
     ORGraphicsSectionDetailGroup * getSection(int i);
     void insertSection(int idx, ORGraphicsSectionDetailGroup * rsd);
     int findSection(const QString & name);
-    void removeSection(int idx, bool del = FALSE);
+    void removeSection(int idx, bool del = false);
 
     void adjustSize();
 

@@ -137,7 +137,7 @@ XSqlQuery::XSqlQuery(const QString &pSql, QSqlDatabase db) :
 {
   _data = new XSqlQueryPrivate(this);
   qApp->setOverrideCursor(Qt::WaitCursor);
-  exec(pSql.toAscii().data());
+  exec(pSql.toLatin1().data());
   qApp->restoreOverrideCursor();
 }
 
@@ -318,9 +318,9 @@ bool XSqlQuery::first()
       }
       _data->_currRecord = record();
     }
-    return TRUE;
+    return true;
   }
-  return FALSE;
+  return false;
 }
 
 bool XSqlQuery::next()
@@ -342,9 +342,9 @@ bool XSqlQuery::next()
       }
       _data->_currRecord = record();
     }
-    return TRUE;
+    return true;
   }
-  return FALSE;
+  return false;
 }
 
 bool XSqlQuery::previous()

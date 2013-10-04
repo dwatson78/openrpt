@@ -102,7 +102,7 @@ void DetailSectionDialog::btnEdit_clicked()
     dgsd->reprintGroupHeader->setChecked(rsdg->isReprintGroupHeader());
     dgsd->cbFoot->setChecked(rsdg->isGroupFootShowing());
 
-    bool exitLoop = FALSE;
+    bool exitLoop = false;
     while(!exitLoop)
     {
       if(dgsd->exec() == QDialog::Accepted)
@@ -137,12 +137,12 @@ void DetailSectionDialog::btnEdit_clicked()
             rsdg->setPageBreak(ORGraphicsSectionDetailGroup::BreakNone);
 
           rsdg->setResetPageCountAfterGroupFooter(resetAfterBreak);
-          exitLoop = TRUE;
+          exitLoop = true;
         }
       }
       else
       {
-        exitLoop = TRUE;
+        exitLoop = true;
       }
     }
   }
@@ -218,4 +218,3 @@ void DetailSectionDialog::setReportSectionDetail( ORGraphicsSectionDetail * gsd)
     }
   }
 }
-

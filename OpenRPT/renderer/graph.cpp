@@ -171,9 +171,9 @@ tGraph::tGraph(const QRect & r) {
     _minValue = 0.0;
     _maxValue = 100.0;
 
-    _drawBars = TRUE;
-    _drawLines = FALSE;
-    _drawPoints = FALSE;
+    _drawBars = true;
+    _drawLines = false;
+    _drawPoints = false;
 
     _font = QFont();
     _titleFont = 0;
@@ -182,8 +182,8 @@ tGraph::tGraph(const QRect & r) {
     _valueLabelFont = 0;
     _valueFont = 0;
 
-    _autoMinMax = TRUE;
-    _autoRepaint = TRUE;
+    _autoMinMax = true;
+    _autoRepaint = true;
 
     _rect = r;
 }
@@ -332,9 +332,9 @@ bool tGraph::drawBars() {
     while(mit.hasNext())
     {
         mit.next();
-        if(mit.value().bar) return TRUE;
+        if(mit.value().bar) return true;
     }
-    return FALSE;
+    return false;
 }
 
 bool tGraph::drawLines() {
@@ -344,9 +344,9 @@ bool tGraph::drawLines() {
     while(mit.hasNext())
     {
         mit.next();
-        if(mit.value().line) return TRUE;
+        if(mit.value().line) return true;
     }
-    return FALSE;
+    return false;
 }
 bool tGraph::drawPoints() {
     //return _drawPoints;
@@ -355,9 +355,9 @@ bool tGraph::drawPoints() {
     while(mit.hasNext())
     {
         mit.next();
-        if(mit.value().point) return TRUE;
+        if(mit.value().point) return true;
     }
-    return FALSE;
+    return false;
 }
 
 void tGraph::setDrawBars(bool b) {
@@ -458,9 +458,9 @@ bool tGraph::autoRepaint() { return _autoRepaint; }
 
 /* ***********************************************
 void tGraph::populateFromResult(QSqlQuery & qry) {
-    bool valid = FALSE;
+    bool valid = false;
     bool old_repaint = autoRepaint();
-    setAutoRepaint(FALSE);
+    setAutoRepaint(false);
     QVariant var;
     double val;
     int cols = qry.driver()->record(qry).count();
@@ -629,14 +629,14 @@ void tGraph::draw(QPainter & paint) {
 
             QMapIterator<int, double> sit(ref.second);
             paint.save();
-            if(drawBars() == TRUE) {
+            if(drawBars() == true) {
                 TSetValue tval;
                 QMap<double, TSetValue> sort_map;
                 sit = ref.second;
                 while(sit.hasNext())
                 {
                     sit.next();
-                    if(sit.value() != 0.0 && _setStyle[sit.key()].bar == TRUE) {
+                    if(sit.value() != 0.0 && _setStyle[sit.key()].bar == true) {
                         tval.first = sit.key();
                         tval.second = sit.value();
                         sort_map[(tval.second < 0.0 ? minValue() : maxValue()) - (tval.second < 0.0 ? -tval.second : tval.second)] = tval;
@@ -657,13 +657,13 @@ void tGraph::draw(QPainter & paint) {
                     }
                 }
             }
-            if(drawLines() == TRUE) {
+            if(drawLines() == true) {
                 this_map.clear();
                 sit = ref.second;
                 while(sit.hasNext())
                 {
                     sit.next();
-                    if(_setStyle[sit.key()].line == TRUE) {
+                    if(_setStyle[sit.key()].line == true) {
                         this_map[sit.key()] = sit.value();
                         if(last_map.contains(sit.key())) {
                             paint.setPen(getSetColor(sit.key()));
@@ -685,12 +685,12 @@ void tGraph::draw(QPainter & paint) {
                 }
                 last_map = this_map;
             }
-            if(drawPoints() == TRUE) {
+            if(drawPoints() == true) {
                 sit = ref.second;
                 while(sit.hasNext())
                 {
                     sit.next();
-                    if(_setStyle[sit.key()].point == TRUE) {
+                    if(_setStyle[sit.key()].point == true) {
                         paint.setBrush(getSetColor(sit.key()));
                         paint.setPen(QColor(0,0,0));
                         int ly1;
