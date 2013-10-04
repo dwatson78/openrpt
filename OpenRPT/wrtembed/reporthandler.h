@@ -46,6 +46,8 @@ class QMouseEvent;
 class QMainWindow;
 class QMenuBar;
 class QAction;
+class QMdiArea;
+class QMdiSubWindow;
 
 class ReportGridOptions;
 class ReportWriterSectionData;
@@ -58,7 +60,7 @@ class ReportHandler : public QObject {
 
         virtual ~ReportHandler();
 
-        void docToolBars(QMainWindow * mw, int edge = 0, bool newLine = FALSE);
+        void docToolBars(QMainWindow * mw, int edge = 0, bool newLine = false);
         QAction * populateMenuBar(QMenuBar * menubar, QAction * exitAction = 0);
 
         void setParentWindow(QWidget * w);
@@ -129,7 +131,7 @@ class ReportHandler : public QObject {
         void dbSaveDoc();
 
         void sReportsChanged(int, bool);
-		void		onWinChanged(QWidget* w);
+        void		onWinChanged(QMdiSubWindow* w);
 
         QDomElement databaseElt() {return _databaseElt;}
         void loadMemDB(const QString &filename, const QDomNode &it);
@@ -178,7 +180,7 @@ class ReportHandler : public QObject {
         unsigned int selectionCount();
 
         QWidget * _parentWindow;
-        bool _parentWindowIsWorkspace;
+        QMdiArea * _mdiParentWindow;
 
     protected slots:
         void updateSelectedEntity();

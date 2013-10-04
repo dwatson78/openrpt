@@ -113,7 +113,7 @@ PageSizeInfo::PageSizeInfo(const QString & n, int qpv, int w, int h)
 
   _area = w * h;
 
-  _null = FALSE;
+  _null = false;
 }
 
 PageSizeInfo::PageSizeInfo()
@@ -123,7 +123,7 @@ PageSizeInfo::PageSizeInfo()
   _width = 0;
   _height = 0;
   _area = 0;
-  _null = TRUE;
+  _null = true;
 }
 
 PageSizeInfo::~PageSizeInfo()

@@ -45,9 +45,9 @@ int main(int argc, char *argv[])
 #endif
 
   QString username  = "";
-  bool    haveUsername    = FALSE;
-  bool    haveDatabaseURL = FALSE;
-  bool    loggedIn        = FALSE;
+  bool    haveUsername    = false;
+  bool    haveDatabaseURL = false;
+  bool    loggedIn        = false;
 
   QString databaseURL = "";
 
@@ -56,8 +56,8 @@ int main(int argc, char *argv[])
 
   if (argc > 1)
   {
-    haveUsername        = FALSE;
-    bool    havePasswd  = FALSE;
+    haveUsername        = false;
+    bool    havePasswd  = false;
     QString passwd      = "";
 
     for (int intCounter = 1; intCounter < argc; intCounter++)
@@ -65,23 +65,23 @@ int main(int argc, char *argv[])
       QString argument(argv[intCounter]);
 
       if (argument.contains("-databaseURL=")) {
-        haveDatabaseURL = TRUE;
+        haveDatabaseURL = true;
         databaseURL    = argument.right(argument.length() - 13);
       }
       else if (argument.contains("-username="))
       {
-        haveUsername = TRUE;
+        haveUsername = true;
         username     = argument.right(argument.length() - 10);
       }
       else if (argument.contains("-passwd="))
       {
-        havePasswd = TRUE;
+        havePasswd = true;
         passwd     = argument.right(argument.length() - 8);
       }
       else if (argument.contains("-noAuth"))
       {
-        haveUsername = TRUE;
-        havePasswd   = TRUE;
+        haveUsername = true;
+        havePasswd   = true;
       }
 
     }
@@ -110,7 +110,7 @@ int main(int argc, char *argv[])
         QApplication::exit(-1);
       }
       else
-        loggedIn = TRUE;
+        loggedIn = true;
     }
 
   }
@@ -129,7 +129,7 @@ int main(int argc, char *argv[])
     if (haveDatabaseURL)
       params.append("databaseURL", databaseURL);
 
-    login newdlg(0, "", TRUE);
+    login newdlg(0, "", true);
     newdlg.set(params, 0);
 
     if (newdlg.exec() == QDialog::Rejected)

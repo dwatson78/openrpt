@@ -23,6 +23,7 @@
 
 #include <QPrinter>
 #include <QPair>
+#include <QList>
 
 
 class LabelPaintEngine;

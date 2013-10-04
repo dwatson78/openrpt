@@ -21,6 +21,7 @@
 #include "metasqlhighlighter.h"
 
 #include <QColor>
+#include <QTextEdit>
 
 // #include "format.h"
 
@@ -253,7 +254,7 @@ void MetaSQLHighlighter::init()
               << "EXPLAIN"
               << "EXTERNAL"
               << "EXTRACT"
-              << "FALSE"
+              << "false"
               << "FETCH"
               << "FILTER"
               << "FINAL"

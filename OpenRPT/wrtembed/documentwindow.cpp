@@ -32,6 +32,7 @@
 
 // qt
 #include <QtGui>
+#include <QMessageBox>
 #include <QSqlError>
 #include <QWheelEvent>
 

@@ -69,7 +69,7 @@ GraphEditor::GraphEditor(QWidget* parent, Qt::WindowFlags fl)
     _leMin->setValidator(new QDoubleValidator(-1000000000.0, 0.0, 2, _leMin));
     _leMax->setValidator(new QDoubleValidator(1.0, 1000000000.0, 2, _leMax));
 
-    _gbSeriesProperties->setEnabled(FALSE);
+    _gbSeriesProperties->setEnabled(false);
 }
 
 GraphEditor::~GraphEditor()
@@ -329,14 +329,14 @@ void GraphEditor::_btnNewSeries_clicked()
     QString sname = "New Series";
     int counter = 0;
     
-    bool exitLoop = FALSE;
+    bool exitLoop = false;
     while(!exitLoop) {
-        exitLoop = TRUE;
+        exitLoop = true;
         for(int i = 0; i < _seriesList.count(); i++) {
 	        if(_seriesList.at(i)->name == sname) {
 	            counter++;
 	            sname = QString().sprintf("New Series %d", counter);
-	            exitLoop = FALSE;
+	            exitLoop = false;
                 break;
 	        }
         }
@@ -346,9 +346,9 @@ void GraphEditor::_btnNewSeries_clicked()
     sd->name = sname;
     sd->color = QString::null;
     sd->column = QString::null;
-    sd->style.bar = TRUE;
-    sd->style.line = FALSE;
-    sd->style.point = FALSE;
+    sd->style.bar = true;
+    sd->style.line = false;
+    sd->style.point = false;
     
     _seriesList.append(sd);
     _cbSeries->addItem(sname);
@@ -438,7 +438,7 @@ void GraphEditor::_cbSeries_activated( const QString & str )
     }
 
     if(_seriesData) {
-	_gbSeriesProperties->setEnabled(TRUE);
+	_gbSeriesProperties->setEnabled(true);
 	_leSeriesName->setText(_seriesData->name);
 	_leSeriesColumn->setText(_seriesData->column);
         for(int c = 0; c < _cbColors->count(); c++) {
@@ -451,7 +451,7 @@ void GraphEditor::_cbSeries_activated( const QString & str )
 	_cbSeriesStyleLines->setChecked(_seriesData->style.line);
 	_cbSeriesStylePoints->setChecked(_seriesData->style.point);
     } else {
-	_gbSeriesProperties->setEnabled(FALSE);
+	_gbSeriesProperties->setEnabled(false);
     }
 }
 

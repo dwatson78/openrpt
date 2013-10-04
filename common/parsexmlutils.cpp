@@ -28,7 +28,7 @@
 //
 // Class ORObject 
 //
-ORObject::ORObject() : _rotation(0) { }
+ORObject::ORObject() : _pen(QPen(Qt::black, 0)), _rotation(0), _border(QPen(Qt::black, 0)) { }
 ORObject::~ORObject() { }
 
 bool ORObject::isLine() { return false; }
@@ -72,31 +72,31 @@ ORCrossTabData * ORObject::toCrossTab() { return 0; }
 //
 // class OR*Data
 //
-bool ORLineData::isLine() { return TRUE; }
+bool ORLineData::isLine() { return true; }
 ORLineData * ORLineData::toLine() { return this; }
 
-bool ORRectData::isRect() { return TRUE; }
+bool ORRectData::isRect() { return true; }
 ORRectData * ORRectData::toRect() { return this; }
 
-bool ORLabelData::isLabel() { return TRUE; }
+bool ORLabelData::isLabel() { return true; }
 ORLabelData * ORLabelData::toLabel() { return this; }
 
-bool ORFieldData::isField() { return TRUE; }
+bool ORFieldData::isField() { return true; }
 ORFieldData * ORFieldData::toField() { return this; }
 
-bool ORTextData::isText() { return TRUE; }
+bool ORTextData::isText() { return true; }
 ORTextData * ORTextData::toText() { return this; }
 
-bool ORBarcodeData::isBarcode() { return TRUE; }
+bool ORBarcodeData::isBarcode() { return true; }
 ORBarcodeData * ORBarcodeData::toBarcode() { return this; }
 
-bool ORImageData::isImage() { return TRUE; }
+bool ORImageData::isImage() { return true; }
 ORImageData * ORImageData::toImage() { return this; }
 
-bool ORGraphData::isGraph() { return TRUE; }
+bool ORGraphData::isGraph() { return true; }
 ORGraphData * ORGraphData::toGraph() { return this; }
 
-bool ORCrossTabData::isCrossTab() { return TRUE; }
+bool ORCrossTabData::isCrossTab() { return true; }
 ORCrossTabData * ORCrossTabData::toCrossTab() { return this; }
 
 ORDetailGroupSectionData::ORDetailGroupSectionData()
@@ -268,8 +268,8 @@ bool parseReportRect(const QDomElement & elemSource, ORRectData & rectTarget)
   rectTarget.setBorder(border);
 
   if (coorCounter == 4)
-    return TRUE;
-  return FALSE;
+    return true;
+  return false;
 }
 
 bool parseReportRect(const QDomElement & elemSource, QRect & rectTarget, ORObject &o)
@@ -355,7 +355,7 @@ bool parseReportFont(const QDomElement & elemSource, QFont & fontTarget)
         }
 		else if (elemThis.tagName() == "italic")
 		{
-			fontTarget.setItalic(TRUE);
+			fontTarget.setItalic(true);
 		}
         else
         {
@@ -366,16 +366,16 @@ bool parseReportFont(const QDomElement & elemSource, QFont & fontTarget)
       }
       nodeCursor = nodeCursor.nextSibling();
     }
-    return TRUE;
+    return true;
   }
-  return FALSE;
+  return false;
 }
 
 bool parseReportData(const QDomElement & elemSource, ORDataData & dataTarget)
 {
   QDomNodeList params = elemSource.childNodes();
-  bool valid_query = FALSE;
-  bool valid_column = FALSE;
+  bool valid_query = false;
+  bool valid_column = false;
 
   for( int paramCounter = 0; paramCounter < params.count(); paramCounter++ )
   {
@@ -383,27 +383,27 @@ bool parseReportData(const QDomElement & elemSource, ORDataData & dataTarget)
     if (elemParam.tagName() == "query")
     {
       dataTarget.query = elemParam.text();
-      valid_query = TRUE;
+      valid_query = true;
     }
     else if(elemParam.tagName() == "column")
     {
       dataTarget.column = elemParam.text();
-      valid_column = TRUE;
+      valid_column = true;
     }
     else
       qDebug("Tag not Parsed at <data>:%s\n", elemParam.tagName().toLatin1().data());
   }
   if(valid_query && valid_column)
-    return TRUE;
+    return true;
 
-  return FALSE;
+  return false;
 }
 
 bool parseReportKey(const QDomElement & elemSource, ORKeyData & dataTarget)
 {
   QDomNodeList params = elemSource.childNodes();
-  bool valid_query = FALSE;
-  bool valid_column = FALSE;
+  bool valid_query = false;
+  bool valid_column = false;
 
   for( int paramCounter = 0; paramCounter < params.count(); paramCounter++ )
   {
@@ -411,27 +411,27 @@ bool parseReportKey(const QDomElement & elemSource, ORKeyData & dataTarget)
     if (elemParam.tagName() == "query")
     {
       dataTarget.query = elemParam.text();
-      valid_query = TRUE;
+      valid_query = true;
     }
     else if(elemParam.tagName() == "column")
     {
       dataTarget.column = elemParam.text();
-      valid_column = TRUE;
+      valid_column = true;
     }
     else
       qDebug("Tag not Parsed at <key>:%s\n", elemParam.tagName().toLatin1().data());
   }
   if(valid_query)
-    return TRUE;
+    return true;
 
-  return FALSE;
+  return false;
 }
 
 bool parseReportLine(const QDomElement & elemSource, ORLineData & lineTarget)
 {
   QDomNodeList params = elemSource.childNodes();
   int          coorCounter = 0;
-  QPen pen;
+  QPen pen(Qt::black, 0);
 
   for ( int paramCounter = 0; paramCounter < params.count(); paramCounter++ )
   {
@@ -470,16 +470,16 @@ bool parseReportLine(const QDomElement & elemSource, ORLineData & lineTarget)
   lineTarget.setPen(pen);
 
   if (coorCounter == 4)
-    return TRUE;
+    return true;
 
-  return FALSE;
+  return false;
 }
 
 bool parseReportLabel(const QDomElement & elemSource, ORLabelData & labelTarget)
 {
   QDomNodeList params = elemSource.childNodes();
-  bool valid_rect = FALSE;
-  bool valid_string = FALSE;
+  bool valid_rect = false;
+  bool valid_string = false;
 
   labelTarget.align = 0;
 
@@ -494,7 +494,7 @@ bool parseReportLabel(const QDomElement & elemSource, ORLabelData & labelTarget)
     else if (elemParam.tagName() == "string")
     {
       labelTarget.string = elemParam.text();
-      valid_string = TRUE;
+      valid_string = true;
     }
     else if (elemParam.tagName() == "left")
       labelTarget.align |= Qt::AlignLeft;
@@ -512,20 +512,20 @@ bool parseReportLabel(const QDomElement & elemSource, ORLabelData & labelTarget)
      qDebug("Tag not Parsed at <label>:%s\n", elemParam.tagName().toLatin1().data());
   }
   if(valid_rect && valid_string)
-    return TRUE;
-  return FALSE;
+    return true;
+  return false;
 }
 
 bool parseReportField(const QDomElement & elemSource, ORFieldData & fieldTarget)
 {
   QDomNodeList params = elemSource.childNodes();
-  bool valid_rect = FALSE;
-  bool valid_data = FALSE;
+  bool valid_rect = false;
+  bool valid_data = false;
 
   fieldTarget.align = 0;
-  fieldTarget.trackTotal = FALSE;
-  fieldTarget.sub_total = FALSE;
-  fieldTarget.builtinFormat = FALSE;
+  fieldTarget.trackTotal = false;
+  fieldTarget.sub_total = false;
+  fieldTarget.builtinFormat = false;
   fieldTarget.format = QString::null;
   fieldTarget.lines = 1;
   fieldTarget.columns = 1;
@@ -572,33 +572,33 @@ bool parseReportField(const QDomElement & elemSource, ORFieldData & fieldTarget)
       valid_data = parseReportData(elemParam, fieldTarget.data);
 	else if (elemParam.tagName() == "format")
 	{
-		fieldTarget.builtinFormat = (elemParam.attribute("builtin")=="true"?TRUE:FALSE);
+		fieldTarget.builtinFormat = (elemParam.attribute("builtin")=="true"?true:false);
 		fieldTarget.format = elemParam.text();
 	}
     else if (elemParam.tagName() == "tracktotal")
     {
       // NB for compatibility with reports V <= 3.0 format info is also read from the total tag
       if(!fieldTarget.builtinFormat)
-        fieldTarget.builtinFormat = (elemParam.attribute("builtin")=="true"?TRUE:FALSE);
-      fieldTarget.sub_total = (elemParam.attribute("subtotal")=="true"?TRUE:FALSE);
+        fieldTarget.builtinFormat = (elemParam.attribute("builtin")=="true"?true:false);
+      fieldTarget.sub_total = (elemParam.attribute("subtotal")=="true"?true:false);
 	  if(!elemParam.text().isEmpty()) 
 		fieldTarget.format = elemParam.text();
       if(!fieldTarget.format.isEmpty())
-        fieldTarget.trackTotal = TRUE;
+        fieldTarget.trackTotal = true;
     }
     else
      qDebug("Tag not Parsed at <field>:%s\n", elemParam.tagName().toLatin1().data());
   }
   if(valid_rect && valid_data)
-    return TRUE;
-  return FALSE;
+    return true;
+  return false;
 }
 
 bool parseReportText(const QDomElement & elemSource, ORTextData & textTarget)
 {
   QDomNodeList params = elemSource.childNodes();
-  bool valid_rect = FALSE;
-  bool valid_data = FALSE;
+  bool valid_rect = false;
+  bool valid_data = false;
 
   textTarget.align = 0;
   textTarget.bottompad = 0;
@@ -631,15 +631,15 @@ bool parseReportText(const QDomElement & elemSource, ORTextData & textTarget)
      qDebug("Tag not Parsed at <text>:%s\n", elemParam.tagName().toLatin1().data());
   }
   if(valid_rect && valid_data)
-    return TRUE;
-  return FALSE;
+    return true;
+  return false;
 }
 
 bool parseReportBarcode(const QDomElement & elemSource, ORBarcodeData & barcodeTarget)
 {
   QDomNodeList params = elemSource.childNodes();
-  bool valid_rect = FALSE;
-  bool valid_data = FALSE;
+  bool valid_rect = false;
+  bool valid_data = false;
 
   barcodeTarget.format = "3of9";
   barcodeTarget.align = 0; // left alignment [default]
@@ -669,16 +669,16 @@ bool parseReportBarcode(const QDomElement & elemSource, ORBarcodeData & barcodeT
   }
 
   if(valid_rect && valid_data)
-    return TRUE;
-  return FALSE;
+    return true;
+  return false;
 }
 
 bool parseReportImage(const QDomElement & elemSource, ORImageData & imageTarget)
 {
   QDomNodeList params = elemSource.childNodes();
-  bool valid_rect = FALSE;
-  bool valid_data = FALSE;
-  bool valid_inline = FALSE;
+  bool valid_rect = false;
+  bool valid_data = false;
+  bool valid_inline = false;
 
   imageTarget.mode = "clip";
 
@@ -696,15 +696,15 @@ bool parseReportImage(const QDomElement & elemSource, ORImageData & imageTarget)
       // ok we have an inline image here
       imageTarget.format = elemParam.attribute("format");
       imageTarget.inline_data = elemParam.firstChild().nodeValue();
-      valid_inline = TRUE;
+      valid_inline = true;
     }
     else
       qDebug("Tag not parsed at <image>:%s", elemParam.tagName().toLatin1().data());
   }
 
   if(valid_rect && ( valid_data || valid_inline ) )
-    return TRUE;
-  return FALSE;
+    return true;
+  return false;
 }
 
 bool parseReportColorDefData(const QDomElement & elemSource, ORColorDefData & coldefTarget)
@@ -731,17 +731,17 @@ bool parseReportColorDefData(const QDomElement & elemSource, ORColorDefData & co
       qDebug("While parsing colordef encountered an unknown element: %s",elemThis.tagName().toLatin1().data());
   }
   if(coldefTarget.name.length() > 0)
-    return TRUE;
-  return FALSE;
+    return true;
+  return false;
 }
 
 bool parseReportTitleData(const QDomElement & elemSource, ORTitleData & titleTarget)
 {
   if(elemSource.tagName() != "title")
-    return FALSE;
+    return false;
 
   titleTarget.string = QString::null;
-  titleTarget.font_defined = FALSE;
+  titleTarget.font_defined = false;
 
   QDomNodeList nlist = elemSource.childNodes();
   for(int nodeCounter = 0; nodeCounter < nlist.count(); nodeCounter++)
@@ -755,45 +755,45 @@ bool parseReportTitleData(const QDomElement & elemSource, ORTitleData & titleTar
       qDebug("While parsing title encountered an unknown element: %s",elemThis.tagName().toLatin1().data());
   }
 
-  return TRUE;
+  return true;
 }
 
 bool parseReportStyleData(const QDomElement & elemSource, ORStyleData & styleTarget)
 {
   if(elemSource.tagName() != "style")
-    return FALSE;
+    return false;
 
-  styleTarget.bar = styleTarget.line = styleTarget.point = FALSE;
+  styleTarget.bar = styleTarget.line = styleTarget.point = false;
 
   QDomNodeList nlist = elemSource.childNodes();
   for(int nodeCounter = 0; nodeCounter < nlist.count(); nodeCounter++)
   {
     QDomElement elemThis = nlist.item(nodeCounter).toElement();
     if(elemThis.tagName() == "bar")
-      styleTarget.bar = TRUE;
+      styleTarget.bar = true;
     else if(elemThis.tagName() == "line")
-      styleTarget.line = TRUE;
+      styleTarget.line = true;
     else if(elemThis.tagName() == "point")
-      styleTarget.point = TRUE;
+      styleTarget.point = true;
     else
       qDebug("While parsing title encountered an unknown element: %s",elemThis.tagName().toLatin1().data());
   }
 
-  if(styleTarget.bar == FALSE && styleTarget.line == FALSE && styleTarget.point == FALSE)
-    return FALSE;
+  if(styleTarget.bar == false && styleTarget.line == false && styleTarget.point == false)
+    return false;
 
-  return TRUE;
+  return true;
 }
 
 bool parseReportDataAxisData(const QDomElement & elemSource, ORDataAxisData & axisTarget)
 {
   if(elemSource.tagName() != "dataaxis")
-    return FALSE;
+    return false;
 
   axisTarget.title.string = QString::null;
-  axisTarget.title.font_defined = FALSE;
+  axisTarget.title.font_defined = false;
   axisTarget.column = QString::null;
-  axisTarget.font_defined = FALSE;
+  axisTarget.font_defined = false;
 
   QDomNodeList nlist = elemSource.childNodes();
   for(int nodeCounter = 0; nodeCounter < nlist.count(); nodeCounter++)
@@ -809,23 +809,23 @@ bool parseReportDataAxisData(const QDomElement & elemSource, ORDataAxisData & ax
       qDebug("While parsing dataaxis encountered an unknown element: %s",elemThis.tagName().toLatin1().data());
   }
 
-  return TRUE;
+  return true;
 }
 
 bool parseReportValueAxisData(const QDomElement & elemSource, ORValueAxisData & axisTarget)
 {
   if(elemSource.tagName() != "valueaxis")
-    return FALSE;
+    return false;
 
   double ival = 0.0;
-  bool valid = FALSE;
+  bool valid = false;
 
   axisTarget.title.string = QString::null;
-  axisTarget.title.font_defined = FALSE;
+  axisTarget.title.font_defined = false;
   axisTarget.min = 0.0;
   axisTarget.max = 100.0;
-  axisTarget.autominmax = TRUE;
-  axisTarget.font_defined = FALSE;
+  axisTarget.autominmax = true;
+  axisTarget.font_defined = false;
 
   QDomNodeList nlist = elemSource.childNodes();
   for(int nodeCounter = 0; nodeCounter < nlist.count(); nodeCounter++)
@@ -849,9 +849,9 @@ bool parseReportValueAxisData(const QDomElement & elemSource, ORValueAxisData & 
     {
       QString amn = elemThis.text().toLower();
       if(amn == "t" || amn == "true" || amn == "")
-        axisTarget.autominmax = TRUE;
+        axisTarget.autominmax = true;
       else
-        axisTarget.autominmax = FALSE;
+        axisTarget.autominmax = false;
     }
     else if(elemThis.tagName() == "font")
       axisTarget.font_defined = parseReportFont(elemThis, axisTarget.font);
@@ -859,20 +859,20 @@ bool parseReportValueAxisData(const QDomElement & elemSource, ORValueAxisData & 
       qDebug("While parsing valueaxis encountered an unknown element: %s",elemThis.tagName().toLatin1().data());
   }
 
-  return TRUE;
+  return true;
 }
 
 bool parseReportSeriesData(const QDomElement & elemSource, ORSeriesData & seriesTarget)
 {
   if(elemSource.tagName() != "series")
-    return FALSE;
+    return false;
 
   seriesTarget.name = QString::null;
   seriesTarget.color = QString::null;
   seriesTarget.column = QString::null;
-  seriesTarget.style.bar = TRUE;
-  seriesTarget.style.line = FALSE;
-  seriesTarget.style.point = FALSE;
+  seriesTarget.style.bar = true;
+  seriesTarget.style.line = false;
+  seriesTarget.style.point = false;
 
   QDomNodeList nlist = elemSource.childNodes();
   for(int nodeCounter = 0; nodeCounter < nlist.count(); nodeCounter++)
@@ -888,9 +888,9 @@ bool parseReportSeriesData(const QDomElement & elemSource, ORSeriesData & series
     {
       if(!parseReportStyleData(elemThis, seriesTarget.style))
       {
-          seriesTarget.style.bar = TRUE;
-          seriesTarget.style.line = FALSE;
-          seriesTarget.style.point = FALSE;
+          seriesTarget.style.bar = true;
+          seriesTarget.style.line = false;
+          seriesTarget.style.point = false;
       }
     }
     else
@@ -901,31 +901,31 @@ bool parseReportSeriesData(const QDomElement & elemSource, ORSeriesData & series
   if(seriesTarget.name.length() > 0 &&
      seriesTarget.color.length() > 0 &&
      seriesTarget.column.length() > 0)
-    return TRUE;
-  return FALSE;
+    return true;
+  return false;
 }
 
 bool parseReportGraphData(const QDomElement & elemSource, ORGraphData & graphTarget)
 {
   if(elemSource.tagName() != "graph")
-    return FALSE;
+    return false;
 
-  bool have_data = FALSE;
-  bool have_rect = FALSE;
-  bool have_series = FALSE;
+  bool have_data = false;
+  bool have_rect = false;
+  bool have_series = false;
 
   graphTarget.title.string = QString::null;
   graphTarget.dataaxis.title.string = QString::null;
-  graphTarget.dataaxis.title.font_defined = FALSE;
+  graphTarget.dataaxis.title.font_defined = false;
   graphTarget.dataaxis.column = QString::null;
-  graphTarget.dataaxis.font_defined = FALSE;
+  graphTarget.dataaxis.font_defined = false;
   graphTarget.valueaxis.title.string = QString::null;
   graphTarget.valueaxis.min = 0;
   graphTarget.valueaxis.max = 100;
-  graphTarget.valueaxis.autominmax = TRUE;
-  graphTarget.valueaxis.font_defined = FALSE;
+  graphTarget.valueaxis.autominmax = true;
+  graphTarget.valueaxis.font_defined = false;
 
-  //graphTarget.series.setAutoDelete(TRUE);
+  //graphTarget.series.setAutoDelete(true);
 
   QDomNodeList nlist = elemSource.childNodes();
   for(int nodeCounter = 0; nodeCounter < nlist.count(); nodeCounter++)
@@ -944,9 +944,9 @@ bool parseReportGraphData(const QDomElement & elemSource, ORGraphData & graphTar
       if(!parseReportDataAxisData(elemThis, graphTarget.dataaxis))
       {
         graphTarget.dataaxis.title.string = QString::null;
-        graphTarget.dataaxis.title.font_defined = FALSE;
+        graphTarget.dataaxis.title.font_defined = false;
         graphTarget.dataaxis.column = QString::null;
-        graphTarget.dataaxis.font_defined = FALSE;
+        graphTarget.dataaxis.font_defined = false;
       }
     }
     else if(elemThis.tagName() == "valueaxis")
@@ -956,8 +956,8 @@ bool parseReportGraphData(const QDomElement & elemSource, ORGraphData & graphTar
         graphTarget.valueaxis.title.string = QString::null;
         graphTarget.valueaxis.min = 0;
         graphTarget.valueaxis.max = 100;
-        graphTarget.valueaxis.autominmax = TRUE;
-        graphTarget.valueaxis.font_defined = FALSE;
+        graphTarget.valueaxis.autominmax = true;
+        graphTarget.valueaxis.font_defined = false;
       }
     }
     else if(elemThis.tagName() == "series")
@@ -966,7 +966,7 @@ bool parseReportGraphData(const QDomElement & elemSource, ORGraphData & graphTar
       if(parseReportSeriesData(elemThis, *orsd))
       {
         graphTarget.series.append(orsd);
-        have_series = TRUE;
+        have_series = true;
       }
       else
         delete orsd;
@@ -977,8 +977,8 @@ bool parseReportGraphData(const QDomElement & elemSource, ORGraphData & graphTar
   }
 
   if(have_data && have_rect && have_series)
-    return TRUE;
-  return FALSE;
+    return true;
+  return false;
 }
 
 //////////////////////////////////////////////////////////////////////////////
@@ -987,7 +987,7 @@ bool parseReportCrossTabElementData(const QString& elementName,
                                     ORCrossTabQueryData& queryData)
 {
   if(elemSource.tagName() != elementName)
-    return FALSE;
+    return false;
 
   queryData.m_query  = QString::null;
   queryData.m_hAlign = QString::null;
@@ -1007,7 +1007,7 @@ bool parseReportCrossTabElementData(const QString& elementName,
       qDebug("While parsing CrossTab Element data encountered an unknown element: %s",elemThis.tagName().toLatin1().data());
   }
 
-  return TRUE;
+  return true;
 }
 
 
@@ -1016,7 +1016,7 @@ bool parseReportTable(const QDomElement& elemSource,
                       ORCrossTabTablePropertiesData& queryData)
 {
   if(elemSource.tagName() != "table")
-    return FALSE;
+    return false;
 
   queryData.m_cellLeftMargin = 0.00;
   queryData.m_cellRightMargin = 0.00;
@@ -1104,7 +1104,7 @@ bool parseReportTable(const QDomElement& elemSource,
     }
   }
 
-  return TRUE;
+  return true;
 }
 
 
@@ -1177,7 +1177,7 @@ bool parseReportCrossTabData(const QDomElement & elemSource, ORCrossTabData & cr
 bool parseReportBackground(const QDomElement & elemSource, ORBackgroundData & bgTarget)
 {
   if(elemSource.tagName() != "background")
-    return FALSE;
+    return false;
 
   bgTarget.enabled = false;
   bgTarget.staticImage = true;
@@ -1242,7 +1242,7 @@ bool parseReportBackground(const QDomElement & elemSource, ORBackgroundData & bg
 bool parseReportWatermark(const QDomElement & elemSource, ORWatermarkData & wmTarget)
 {
   if(elemSource.tagName() != "watermark")
-    return FALSE;
+    return false;
 
   wmTarget.text = QString::null;
   wmTarget.opacity = 25;
@@ -1329,7 +1329,7 @@ bool parseReportSection(const QDomElement & elemSource, ORSectionData & sectionT
     else if(elemThis.tagName() == "label")
     {
       ORLabelData * label = new ORLabelData();
-      if(parseReportLabel(elemThis, *label) == TRUE)
+      if(parseReportLabel(elemThis, *label) == true)
         sectionTarget.objects.append(label);
       else
         delete label;
@@ -1337,7 +1337,7 @@ bool parseReportSection(const QDomElement & elemSource, ORSectionData & sectionT
     else if(elemThis.tagName() == "field")
     {
       ORFieldData * field = new ORFieldData();
-      if(parseReportField(elemThis, *field) == TRUE)
+      if(parseReportField(elemThis, *field) == true)
       {
         sectionTarget.objects.append(field);
         if(field->trackTotal)
@@ -1349,7 +1349,8 @@ bool parseReportSection(const QDomElement & elemSource, ORSectionData & sectionT
     else if(elemThis.tagName() == "text")
     {
       ORTextData * text = new ORTextData();
-      if(parseReportText(elemThis, *text) == TRUE)
+
+      if(parseReportText(elemThis, *text) == true)
         sectionTarget.objects.append(text);
       else
         delete text;
@@ -1357,7 +1358,7 @@ bool parseReportSection(const QDomElement & elemSource, ORSectionData & sectionT
     else if(elemThis.tagName() == "line")
     {
       ORLineData * line = new ORLineData();
-      if(parseReportLine(elemThis, *line) == TRUE)
+      if(parseReportLine(elemThis, *line) == true)
         sectionTarget.objects.append(line);
       else
         delete line;
@@ -1365,7 +1366,7 @@ bool parseReportSection(const QDomElement & elemSource, ORSectionData & sectionT
     else if(elemThis.tagName() == "rect")
     {
         ORRectData * rect = new ORRectData();
-        if(parseReportRect(elemThis, *rect) == TRUE)
+        if(parseReportRect(elemThis, *rect) == true)
         {
           // to maintain compatibility with older version that don't support borders,
           // for which rect border color is recorded in the "pen" element
@@ -1381,7 +1382,7 @@ bool parseReportSection(const QDomElement & elemSource, ORSectionData & sectionT
     else if(elemThis.tagName() == "barcode")
     {
       ORBarcodeData * bc = new ORBarcodeData();
-      if(parseReportBarcode(elemThis, *bc) == TRUE)
+      if(parseReportBarcode(elemThis, *bc) == true)
         sectionTarget.objects.append(bc);
       else
         delete bc;
@@ -1389,7 +1390,7 @@ bool parseReportSection(const QDomElement & elemSource, ORSectionData & sectionT
     else if(elemThis.tagName() == "image")
     {
       ORImageData * img = new ORImageData();
-      if(parseReportImage(elemThis, *img) == TRUE)
+      if(parseReportImage(elemThis, *img) == true)
         sectionTarget.objects.prepend(img);
       else
         delete img;
@@ -1397,7 +1398,7 @@ bool parseReportSection(const QDomElement & elemSource, ORSectionData & sectionT
     else if(elemThis.tagName() == "graph")
     {
       ORGraphData * graph = new ORGraphData();
-      if(parseReportGraphData(elemThis, *graph) == TRUE)
+      if(parseReportGraphData(elemThis, *graph) == true)
         sectionTarget.objects.append(graph);
       else
         delete graph;
@@ -1405,7 +1406,7 @@ bool parseReportSection(const QDomElement & elemSource, ORSectionData & sectionT
     else if(elemThis.tagName() == "crosstab")
     {
       ORCrossTabData * crossTab = new ORCrossTabData();
-      if(parseReportCrossTabData(elemThis, *crossTab) == TRUE)
+      if(parseReportCrossTabData(elemThis, *crossTab) == true)
         sectionTarget.objects.append(crossTab);
       else
         delete crossTab;
@@ -1418,17 +1419,17 @@ bool parseReportSection(const QDomElement & elemSource, ORSectionData & sectionT
     else
       qDebug("While parsing section encountered an unknown element: %s",elemThis.tagName().toLatin1().data());
   }
-  return TRUE;
+  return true;
 }
 
 bool parseReportDetailSection(const QDomElement & elemSource, ORDetailSectionData & sectionTarget)
 {
   if(elemSource.tagName() != "section")
-    return FALSE;
+    return false;
 
-  bool have_name = FALSE;
-  bool have_detail = FALSE;
-  bool have_key = FALSE;
+  bool have_name = false;
+  bool have_detail = false;
+  bool have_key = false;
 
   ORSectionData * old_head = 0;
   ORSectionData * old_foot = 0;
@@ -1440,7 +1441,7 @@ bool parseReportDetailSection(const QDomElement & elemSource, ORDetailSectionDat
     if(elemThis.tagName() == "name")
     {
       sectionTarget.name = elemThis.text();
-      have_name = TRUE;
+      have_name = true;
     }
     else if(elemThis.tagName() == "pagebreak")
     {
@@ -1450,7 +1451,7 @@ bool parseReportDetailSection(const QDomElement & elemSource, ORDetailSectionDat
     else if(elemThis.tagName() == "grouphead")
     {
       ORSectionData * sd = new ORSectionData();
-      if(parseReportSection(elemThis, *sd) == TRUE)
+      if(parseReportSection(elemThis, *sd) == true)
       {
         old_head = sd;
         sectionTarget.trackTotal += sd->trackTotal;
@@ -1461,7 +1462,7 @@ bool parseReportDetailSection(const QDomElement & elemSource, ORDetailSectionDat
     else if(elemThis.tagName() == "groupfoot")
     {
       ORSectionData * sd = new ORSectionData();
-      if(parseReportSection(elemThis, *sd) == TRUE)
+      if(parseReportSection(elemThis, *sd) == true)
       {
         old_foot = sd;
         sectionTarget.trackTotal += sd->trackTotal;
@@ -1498,7 +1499,7 @@ bool parseReportDetailSection(const QDomElement & elemSource, ORDetailSectionDat
         else if(node.nodeName() == "head")
         {
           ORSectionData * sd = new ORSectionData();
-          if(parseReportSection(node.toElement(), *sd) == TRUE)
+          if(parseReportSection(node.toElement(), *sd) == true)
           {
             dgsd->head = sd;
             sectionTarget.trackTotal += sd->trackTotal;
@@ -1515,7 +1516,7 @@ bool parseReportDetailSection(const QDomElement & elemSource, ORDetailSectionDat
         else if(node.nodeName() == "foot")
         {
           ORSectionData * sd = new ORSectionData();
-          if(parseReportSection(node.toElement(), *sd) == TRUE)
+          if(parseReportSection(node.toElement(), *sd) == true)
           {
             dgsd->foot = sd;
             sectionTarget.trackTotal += sd->trackTotal;
@@ -1536,11 +1537,11 @@ bool parseReportDetailSection(const QDomElement & elemSource, ORDetailSectionDat
       have_key = parseReportKey(elemThis.namedItem("key").toElement(), sectionTarget.key);
 
       ORSectionData * sd = new ORSectionData();
-      if(parseReportSection(elemThis, *sd) == TRUE)
+      if(parseReportSection(elemThis, *sd) == true)
       {
         sectionTarget.detail = sd;
         sectionTarget.trackTotal += sd->trackTotal;
-        have_detail = TRUE;
+        have_detail = true;
       }
       else
         delete sd;
@@ -1565,11 +1566,11 @@ bool parseReport(const QDomElement & elemSource, ORReportData & reportTarget, QS
   if(elemSource.tagName() != "report")
   {
     qDebug("QDomElement passed to parseReport() was not <report> tag");
-    return FALSE;
+    return false;
   }
 
   double d = 0.0;
-  bool valid = FALSE;
+  bool valid = false;
 
   QDomNodeList section = elemSource.childNodes();
   for(int nodeCounter = 0; nodeCounter < section.count(); nodeCounter++)
@@ -1616,9 +1617,9 @@ bool parseReport(const QDomElement & elemSource, ORReportData & reportTarget, QS
     else if(elemThis.tagName() == "labeltype")
       reportTarget.page.setLabelType(elemThis.firstChild().nodeValue());
     else if(elemThis.tagName() == "portrait")
-      reportTarget.page.setPortrait(TRUE);
+      reportTarget.page.setPortrait(true);
     else if(elemThis.tagName() == "landscape")
-      reportTarget.page.setPortrait(FALSE);
+      reportTarget.page.setPortrait(false);
     else if(elemThis.tagName() == "topmargin")
     {
       d = elemThis.text().toDouble(&valid);
@@ -1672,7 +1673,7 @@ bool parseReport(const QDomElement & elemSource, ORReportData & reportTarget, QS
     else if(elemThis.tagName() == "rpthead")
     {
       ORSectionData * sd = new ORSectionData();
-      if(parseReportSection(elemThis, *sd) == TRUE)
+      if(parseReportSection(elemThis, *sd) == true)
       {
         reportTarget.rpthead = sd;
         reportTarget.trackTotal += sd->trackTotal;
@@ -1683,7 +1684,7 @@ bool parseReport(const QDomElement & elemSource, ORReportData & reportTarget, QS
     else if(elemThis.tagName() == "rptfoot")
     {
       ORSectionData * sd = new ORSectionData();
-      if(parseReportSection(elemThis, *sd) == TRUE)
+      if(parseReportSection(elemThis, *sd) == true)
       {
         reportTarget.rptfoot = sd;
         reportTarget.trackTotal += sd->trackTotal;
@@ -1694,7 +1695,7 @@ bool parseReport(const QDomElement & elemSource, ORReportData & reportTarget, QS
     else if(elemThis.tagName() == "pghead")
     {
       ORSectionData * sd = new ORSectionData();
-      if(parseReportSection(elemThis, *sd) == TRUE)
+      if(parseReportSection(elemThis, *sd) == true)
       {
         if(sd->extra == "firstpage")
           reportTarget.pghead_first = sd;
@@ -1719,7 +1720,7 @@ bool parseReport(const QDomElement & elemSource, ORReportData & reportTarget, QS
     else if(elemThis.tagName() == "pgfoot")
     {
       ORSectionData * sd = new ORSectionData();
-      if(parseReportSection(elemThis, *sd) == TRUE) {
+      if(parseReportSection(elemThis, *sd) == true) {
         if(sd->extra == "firstpage")
           reportTarget.pgfoot_first = sd;
         else if(sd->extra == "odd")
@@ -1743,7 +1744,7 @@ bool parseReport(const QDomElement & elemSource, ORReportData & reportTarget, QS
     else if(elemThis.tagName() == "section")
     {
       ORDetailSectionData * dsd = new ORDetailSectionData();
-      if(parseReportDetailSection(elemThis, *dsd) == TRUE)
+      if(parseReportDetailSection(elemThis, *dsd) == true)
       {
         reportTarget.sections.append(dsd);
         reportTarget.trackTotal += dsd->trackTotal;
@@ -1754,7 +1755,7 @@ bool parseReport(const QDomElement & elemSource, ORReportData & reportTarget, QS
     else if(elemThis.tagName() == "colordef")
     {
       ORColorDefData coldef;
-      if(parseReportColorDefData(elemThis, coldef) == TRUE)
+      if(parseReportColorDefData(elemThis, coldef) == true)
       {
         QColor col(coldef.red, coldef.green, coldef.blue);
         reportTarget.color_map[coldef.name] = col;
@@ -1777,20 +1778,20 @@ bool parseReport(const QDomElement & elemSource, ORReportData & reportTarget, QS
     }
   }
 
-  return TRUE;
+  return true;
 }
 
 
 bool parseReportParameter(const QDomElement & elemSource, ORReportData & reportTarget)
 {
   if(elemSource.tagName() != "parameter")
-    return FALSE;
+    return false;
 
   ORParameter param;
   
   param.name = elemSource.attribute("name");
   if(param.name.isEmpty())
-    return FALSE;
+    return false;
 
   param.type = elemSource.attribute("type");
   param.defaultValue  = elemSource.attribute("default");
@@ -1818,6 +1819,6 @@ bool parseReportParameter(const QDomElement & elemSource, ORReportData & reportT
 
   reportTarget.definedParams.insert(param.name, param);
 
-  return TRUE;
+  return true;
 }
 

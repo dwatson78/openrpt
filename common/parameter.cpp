@@ -115,7 +115,7 @@ QString ParameterList::name(int pAt) const
 QVariant ParameterList::value(int pAt, bool *pValid) const
 {
   if (pValid != NULL)
-    *pValid = TRUE;
+    *pValid = true;
 
   return operator[](pAt)._value;
 }
@@ -127,14 +127,14 @@ QVariant ParameterList::value(const QString &pParamName, bool *pValid) const
     if (operator[](counter)._name == pParamName)
     {
       if (pValid != NULL)
-        *pValid = TRUE;
+        *pValid = true;
 
       return operator[](counter)._value;
     }
   }
 
   if (pValid != NULL)
-    *pValid = FALSE;
+    *pValid = false;
 
   return QVariant();
 }
@@ -144,9 +144,9 @@ bool ParameterList::inList(const QString &pParamName) const
   for (int counter = 0; counter < count(); counter++)
   {
     if (operator[](counter)._name == pParamName)
-      return TRUE;
+      return true;
   }
 
-  return FALSE;
+  return false;
 }
 

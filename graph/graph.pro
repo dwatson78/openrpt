@@ -34,5 +34,5 @@ UI_DIR = tmp
 OBJECTS_DIR = tmp
 
 DESTDIR = ../bin
-QT +=  sql
+QT +=  sql widgets
 

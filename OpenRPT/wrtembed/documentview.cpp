@@ -31,6 +31,7 @@
 
 // qt
 #include <QtGui>
+#include <QScrollBar>
 #include <QSqlError>
 #include <QWheelEvent>
 
@@ -123,17 +124,8 @@ void DocumentView::keyReleaseEvent ( QKeyEvent * event )
 
 void DocumentView::moveSelectedItems (int x, int y, Qt::KeyboardModifiers keyModifiers)
 {
-    double xfactor = 1; 
-    double yfactor = 1; 
-
     ReportGridOptions *rgo = _ds->gridOptions();
-    if(rgo)
-    {
-        xfactor = 100 * rgo->xInterval();
-        yfactor = 100 * rgo->yInterval();
-    }
-
-	QGraphicsItem *firstItem = NULL;
+    QGraphicsItem *firstItem = NULL;
 	QPointF lastPos;
 
     foreach(QGraphicsItem *item, items()) 
@@ -145,10 +137,17 @@ void DocumentView::moveSelectedItems (int x, int y, Qt::KeyboardModifiers keyMod
 				firstItem = item;
 				lastPos = item->scenePos();
 			}
-			QPointF p = item->pos();
-			QRectF sceneRec = item->sceneBoundingRect();
-			item->setPos(	xfactor * qRound((sceneRec.left() + xfactor * x) / xfactor) + p.x() - sceneRec.left(),
-							yfactor * qRound((sceneRec.top() + yfactor * y) / yfactor) + p.y() - sceneRec.top());
+            QPointF p = item->pos();
+            if(rgo && rgo->isSnap())
+            {
+                p += QPointF(x*100*rgo->xInterval(), y*100*rgo->yInterval());
+                p = rgo->snapPoint(p);
+            }
+            else
+            {
+                p += QPointF(x, y);
+            }
+            item->setPos(p);
 		}
     }
 

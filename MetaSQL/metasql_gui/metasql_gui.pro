@@ -22,7 +22,7 @@ include( ../../global.pri )
 
 TEMPLATE = app
 CONFIG += qt warn_on
-QT     +=  sql xml
+QT     +=  sql xml widgets  printsupport
 
 INCLUDEPATH += .. ../tmp ../../common ../../../openrpt-build-desktop/MetaSQL/tmp  ../../../openrpt-build-desktop/common
 DEPENDPATH  += .. ../tmp ../../common ../../../openrpt-build-desktop/MetaSQL/tmp  ../../../openrpt-build-desktop/common
@@ -39,7 +39,7 @@ LIBS += -L../../lib -lMetaSQL -lcommon
 
 SOURCES += main.cpp
 
-RESOURCES += ../OpenRPT/images/OpenRPTMetaSQL.qrc \
+RESOURCES += ../../OpenRPT/images/OpenRPTMetaSQL.qrc \
 
 win32-msvc* {
   PRE_TARGETDEPS += ../../lib/MetaSQL.lib \

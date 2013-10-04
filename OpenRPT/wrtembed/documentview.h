@@ -22,6 +22,7 @@
 #define __DOCUMENTVIEW_H__
 
 #include <QtGui>
+#include <QGraphicsView>
 
 class DocumentScene;
 class ReportGridOptions;

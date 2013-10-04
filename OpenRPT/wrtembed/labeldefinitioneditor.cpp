@@ -88,7 +88,7 @@ void LabelDefinitionEditor::saveLabelDef()
 
   QString name = labelName->text();
   QString errorText = "";
-  bool hasError = FALSE;
+  bool hasError = false;
 
   if (name.length() > 0)
   {
@@ -99,13 +99,13 @@ void LabelDefinitionEditor::saveLabelDef()
     else
     {
       errorText = "This label name is already taken.  Please enter a new, unique name.";
-      hasError = TRUE;
+      hasError = true;
     }
   }
   else
   {
     errorText = "You must give this label definition a name.";
-    hasError = TRUE;
+    hasError = true;
   }
 
   if (hasError)
@@ -120,7 +120,7 @@ void LabelDefinitionEditor::saveLabelDef()
 
 bool LabelDefinitionEditor::nameExists(QString name)
 {
-  bool exists = FALSE;
+  bool exists = false;
   XSqlQuery xqry;
   xqry.prepare("SELECT labeldef_id FROM labeldef WHERE labeldef_name=:name");
   xqry.bindValue(":name", name);
@@ -128,7 +128,7 @@ bool LabelDefinitionEditor::nameExists(QString name)
 
   if (xqry.first())
   {
-    exists = TRUE;
+    exists = true;
   }
   return exists;
 }

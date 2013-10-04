@@ -95,12 +95,12 @@ int login::set(const ParameterList &pParams, QSplashScreen *pSplash)
   {
     _username->setText(param.toString());
     _password->setFocus();
-    _captive = TRUE;
+    _captive = true;
   }
   else
   {
     _username->setFocus();
-    _captive = FALSE;
+    _captive = false;
   }
 
   param = pParams.value("copyright", &valid);
@@ -224,7 +224,7 @@ void login::sOptions()
   ParameterList params;
   params.append("databaseURL", _databaseURL);
 
-  loginOptions newdlg(this, "", TRUE);
+  loginOptions newdlg(this, "", true);
   newdlg.set(params);
   if (newdlg.exec() != QDialog::Rejected)
   {

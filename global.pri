@@ -26,6 +26,8 @@
 
 CONFIG += release
 
+DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0
+
 macx:exists(macx.pri) {
   include(macx.pri)
 }

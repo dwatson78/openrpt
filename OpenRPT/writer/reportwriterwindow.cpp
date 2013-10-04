@@ -28,7 +28,8 @@
 
 // qt
 #include <QSqlDatabase>
-#include <QWorkspace>
+#include <QMdiArea>
+#include <QMdiSubWindow>
 #include <QMenuBar>
 #include <QAction>
 #include <QEvent>
@@ -54,8 +55,7 @@ ReportWriterWindow::ReportWriterWindow()
     setWindowIcon(QPixmap(OpenReportsIcon_xpm));
 
     // add the workspace
-    ws = new QWorkspace();
-    ws->setScrollBarsEnabled(TRUE);
+    ws = new QMdiArea();
 
     setCentralWidget(ws);
 
@@ -63,7 +63,7 @@ ReportWriterWindow::ReportWriterWindow()
     fileExitAction = new QAction(tr("E&xit"), this);
     fileExitAction->setObjectName("file exit");
     fileExitAction->setShortcut(Qt::ALT+Qt::Key_F4);
-    connect(fileExitAction, SIGNAL(activated()), this, SLOT(appExit()));
+    connect(fileExitAction, SIGNAL(triggered()), this, SLOT(appExit()));
 
     handler = new ReportHandler(this, "report handler");
 
@@ -74,7 +74,7 @@ ReportWriterWindow::ReportWriterWindow()
     QAction * sepid = handler->populateMenuBar(menuBar(), fileExitAction);
 
     windowMenu = new QMenu(tr("&Windows"));
-    //windowMenu->setCheckable(TRUE);
+    //windowMenu->setCheckable(true);
     connect(windowMenu, SIGNAL(aboutToShow()), this, SLOT(sPrepareWindowMenu()));
     menuBar()->insertMenu(sepid, windowMenu);
 
@@ -89,11 +89,11 @@ ReportWriterWindow::ReportWriterWindow()
 
     connect(handler, SIGNAL(dbOpenClosed()), this, SLOT(setCaption()));
     connect(handler, SIGNAL(messageChanged(const QString &)),
-            statusBar(), SLOT(message(const QString &)));
+            statusBar(), SLOT(showMessage(const QString &)));
     connect(handler, SIGNAL(messageCleared()),
-            statusBar(), SLOT(clear()));
+            statusBar(), SLOT(clearMessage()));
     handler->onWinChanged(NULL);
-    connect(ws, SIGNAL(windowActivated(QWidget*)), handler, SLOT(onWinChanged(QWidget*)));
+    connect(ws, SIGNAL(subWindowActivated(QMdiSubWindow*)), handler, SLOT(onWinChanged(QMdiSubWindow*)));
     
 }
 
@@ -119,12 +119,12 @@ void ReportWriterWindow::appExit() {
 
 void ReportWriterWindow::timerEvent(QTimerEvent * e) {
     if(e->timerId() == dbTimerId) {
-        QSqlDatabase db = QSqlDatabase::database(QSqlDatabase::defaultConnection,FALSE);
+        QSqlDatabase db = QSqlDatabase::database(QSqlDatabase::defaultConnection,false);
         if(db.isValid()) {
             QSqlQuery qry(getSqlFromTag("fmt07", db.driverName()));		// MANU
 
 #if 0
-            if(qry.first() == TRUE) {
+            if(qry.first() == true) {
                 // Nothing to do.  We were just creating a little traffic
                 qDebug("Keep alive succeeded");
             } else {
@@ -137,12 +137,10 @@ void ReportWriterWindow::timerEvent(QTimerEvent * e) {
 }
 
 void ReportWriterWindow::closeEvent(QCloseEvent * e) {
-    QWidgetList wl = ws->windowList();
-    QWidget * w = 0;
+    QList<QMdiSubWindow *> wl = ws->subWindowList();
     for(int i = 0; i < wl.size(); i++)
     {
-      w = wl.at(i);
-      if(w && !w->close())
+      if(wl.at(i) && !(wl.at(i)->close()))
       {
         e->ignore();
         return;
@@ -189,19 +187,19 @@ void ReportWriterWindow::sPrepareWindowMenu()
 {
   windowMenu->clear();
 
-  QAction * intCascadeid = windowMenu->addAction(tr("&Cascade"), ws, SLOT(cascade()));
-  QAction * intTileid = windowMenu->addAction(tr("&Tile"), ws, SLOT(tile()));
+  QAction * intCascadeid = windowMenu->addAction(tr("&Cascade"), ws, SLOT(cascadeSubWindows()));
+  QAction * intTileid = windowMenu->addAction(tr("&Tile"), ws, SLOT(tileSubWindows()));
 
   windowMenu->addSeparator();
 
   int cnt = 0;
-  QWidgetList windows = ws->windowList();
+  QList<QMdiSubWindow *> windows = ws->subWindowList();
   for (int intCursor = 0; intCursor < windows.count(); intCursor++)
   {
     if(windows.at(intCursor)->isVisible())
     {
       QAction * intMenuid = windowMenu->addAction(windows.at(intCursor)->windowTitle(), windows.at(intCursor), SLOT(setFocus()));
-      intMenuid->setChecked((ws->activeWindow() == windows.at(intCursor)));
+      intMenuid->setChecked((ws->activeSubWindow() == windows.at(intCursor)));
       cnt++;
     }
   }

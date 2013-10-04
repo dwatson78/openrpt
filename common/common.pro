@@ -22,7 +22,7 @@ include( ../global.pri )
 
 TEMPLATE    = lib
 CONFIG      += qt warn_on staticlib
-QT          += xml sql
+QT          += xml sql widgets
 DEFINES     += MAKELIB
 
 INCLUDEPATH = .
