@@ -112,7 +112,7 @@ class ORPreRenderPrivate {
     bool populateData(const ORDataData &, orData &);
     orQuery* getQuerySource(const QString &);
 
-    void createNewPage();
+    void createNewPage(bool = false);
     qreal finishCurPage(bool = false);
     qreal finishCurPageSize(bool = false);
     qreal maxDetailSectionY();
@@ -274,7 +274,7 @@ void ORPreRenderPrivate::renderWatermark(OROPage * p)
   p->setWatermarkOpacity(_wmOpacity);
 }
 
-void ORPreRenderPrivate::createNewPage()
+void ORPreRenderPrivate::createNewPage(bool forceFirstPage)
 {
   if(_pageCounter > 0)
     finishCurPage();
@@ -303,7 +303,7 @@ void ORPreRenderPrivate::createNewPage()
 
   _yOffset = _topMargin;
 
-  if(_pageCounter == 1 && _reportData->pghead_first != 0)
+  if((_pageCounter == 1 || forceFirstPage) && _reportData->pghead_first != 0)
     renderSection(*(_reportData->pghead_first));
   else if(lastPage == true && _reportData->pghead_last != 0)
     renderSection(*(_reportData->pghead_last));
@@ -569,7 +569,7 @@ void ORPreRenderPrivate::renderDetailSection(ORDetailSectionData & detailData)
               status = query->next();
               if(do_break)
               {
-                createNewPage();
+                createNewPage(grp->isResetPageCountAfterGroupFooter);
                 if(grp->isResetPageCountAfterGroupFooter)
                 {
                   _groupPageCount.insert(_pageCounter-1, _groupPageCounter-1);
