@@ -307,9 +307,9 @@ void ORPreRenderPrivate::createNewPage(bool forceFirstPage)
     renderSection(*(_reportData->pghead_first));
   else if(lastPage == true && _reportData->pghead_last != 0)
     renderSection(*(_reportData->pghead_last));
-  else if((_pageCounter % 2) == 1 && _reportData->pghead_odd != 0)
+  else if( (forceFirstPage || ((_groupPageCounter % 2) == 1)) && _reportData->pghead_odd != 0)
     renderSection(*(_reportData->pghead_odd));
-  else if((_pageCounter % 2) == 0 && _reportData->pghead_even != 0)
+  else if((_groupPageCounter % 2) == 0 && _reportData->pghead_even != 0)
     renderSection(*(_reportData->pghead_even));
   else if(_reportData->pghead_any != 0)
     renderSection(*(_reportData->pghead_any));
