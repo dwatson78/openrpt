@@ -130,6 +130,8 @@ bool ORPrintRender::render(ORODocument * pDocument)
 
   for(int copy = 0; copy < _printer->numCopies(); copy++)
   {
+    if(copy > 0)
+      _printer->newPage();
     for(int page = fromPage; page < toPage; page++)
     {
       if(page > 0)
@@ -142,6 +144,7 @@ bool ORPrintRender::render(ORODocument * pDocument)
       QSize margins(_printer->paperRect().left() - _printer->pageRect().left(), _printer->paperRect().top() - _printer->pageRect().top());
       renderPage(pDocument, pageToPrint, _painter, xDpi, yDpi, margins, _printer->resolution());
     }
+    
   }
 
   if(endWhenComplete)
