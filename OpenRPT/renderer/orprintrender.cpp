@@ -75,11 +75,12 @@ bool ORPrintRender::setupPrinter(ORODocument * pDocument, QPrinter * pPrinter)
   else 
   {
     // On Linux, the print preview has a margin bug, this line fixes it for me using Qt 4.6.4 or Qt 4.8.4.
-    #if (defined(Q_WS_X11) && (QT_VERSION <= 0x040804)) || (defined(Q_WS_MAC) && (QT_VERSION < 0x040801)) // QTBUG-20882
+	// Commented out this section, because this bug is affecting windows, too!!
+    // #if (defined(Q_WS_X11) && (QT_VERSION <= 0x040804)) || (defined(Q_WS_MAC) && (QT_VERSION < 0x040801)) // QTBUG-20882
       pPrinter->setPageSize((QPrinter::PageSize)psi.qpValue());
-    #else
-      pPrinter->setPaperSize(QSizeF(psi.width()/100,psi.height()/100), QPrinter::Inch);
-    #endif
+    // #else
+    //  pPrinter->setPaperSize(QSizeF(psi.width()/100,psi.height()/100), QPrinter::Inch);
+    // #endif
   }
 
   return true;

@@ -40,13 +40,13 @@ TextElementSplitter::TextElementSplitter(ORObject *textelem, QString text, qreal
     _baseElementRect.setRight(_baseElementRect.right() + CLIPMARGIN / 100.0);
 #endif
 
-#ifdef Q_WS_X11
+#ifdef Q_WS_MAC
+  _lineClipWidth = (int)(_baseElementRect.width() * prnt.logicalDpiX()) - CLIPMARGIN;
+#else
   // Clip size needs to grow with font size and element's width in order
-  // not to cut off text.
+  // not to cut off text. Tested in Linux and Windows
   int linuxClipMargin = (_element->font.pointSize()*_element->rect.width())/300;
   _lineClipWidth = (int)(_baseElementRect.width() * prnt.logicalDpiX()) - linuxClipMargin;
-#else
-  _lineClipWidth = (int)(_baseElementRect.width() * prnt.logicalDpiX()) - CLIPMARGIN;
 #endif
 
   _fm = QSharedPointer<QFontMetrics>(new QFontMetrics(_element->font, &prnt));
