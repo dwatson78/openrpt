@@ -26,6 +26,7 @@
 #include <QTextDocument>
 #include <QTextCursor>
 #include <QPaintEngine>
+#include <QDebug>
 
 static void renderBackground(QImage &, const QImage &, const QRect &, bool, Qt::AspectRatioMode, int, unsigned int);
 static void renderWatermark(QImage &, const QString &, const QFont &, const unsigned int, double, double, double, double);
@@ -128,12 +129,26 @@ bool ORPrintRender::render(ORODocument * pDocument)
   if(toPage == 0 || toPage > pDocument->pages())
     toPage = pDocument->pages();
 
-  for(int copy = 0; copy < _printer->numCopies(); copy++)
+  int copyCount = _printer->numCopies();
+#if QT_VERSION >= 0x040700
+  qDebug() << "QT Version Redirect...";
+  qDebug() << "_printer->numCopies(): " << copyCount;
+  qDebug() << "_printer->supportsMultipleCopies(): " << _printer->supportsMultipleCopies();
+  qDebug() << "_printer->copyCount(): " << _printer->copyCount();
+  if(_printer->numCopies() > 1 && _printer->supportsMultipleCopies())
   {
+    _printer->setCopyCount(copyCount);
+    copyCount = 1;
+  }
+#endif
+  for(int copy = 0; copy < copyCount; copy++)
+  {
+    qDebug() << "Copy: " << (copy+1);
     if(copy > 0)
       _printer->newPage();
     for(int page = fromPage; page < toPage; page++)
     {
+      qDebug() << "Page: " << (page+1);
       if(page > 0)
         _printer->newPage();
 
@@ -144,7 +159,6 @@ bool ORPrintRender::render(ORODocument * pDocument)
       QSize margins(_printer->paperRect().left() - _printer->pageRect().left(), _printer->paperRect().top() - _printer->pageRect().top());
       renderPage(pDocument, pageToPrint, _painter, xDpi, yDpi, margins, _printer->resolution());
     }
-    
   }
 
   if(endWhenComplete)
