@@ -1667,10 +1667,23 @@ void ReportHandler::filePrintToPDF()
   QMainWindow * mw = 0;
   if(gw)
     mw = gw;
-  QString outfile = QFileDialog::getSaveFileName( mw, tr("Choose filename to save"), tr("print.pdf"), tr("Pdf (*.pdf)") );
+
+  QSettings orSet("xTuple","OpenRpt");
+  orSet.beginGroup("Printing");
+  QString defaultFile = tr("print.pdf");
+  if(orSet.contains("lastPrintDir"))
+  {
+    defaultFile.prepend(orSet.value("lastPrintDir").toString().append("/"));
+  }
+
+  QString outfile = QFileDialog::getSaveFileName( mw, tr("Choose filename to save"), defaultFile, tr("Pdf (*.pdf)") );
 
   if(outfile.isEmpty()) // User canceled save dialog
     return;
+
+  QFileInfo fi(outfile);
+  orSet.setValue("lastPrintDir",fi.dir().absolutePath());
+  orSet.endGroup();
 
   if(gw)
     filePrintToPDF(gw, gw->_scene->document(), outfile);
